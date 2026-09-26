@@ -91,10 +91,12 @@ def _process_member(args: tuple[str, list[str]]) -> pd.DataFrame:
     return pd.concat(out, ignore_index=True) if out else pd.DataFrame(columns=COLUMNS)
 
 
-def build_facts(zip_path: Path = RAW / "sec" / "companyfacts.zip", workers: int = 8,
-                chunk: int = 400) -> Path:
+def build_facts(zip_path: Path = RAW / "sec" / "companyfacts.zip", workers: int = 6,
+                chunk: int = 200, ciks: set[int] | None = None) -> Path:
     with zipfile.ZipFile(zip_path) as z:
         names = [n for n in z.namelist() if n.endswith(".json")]
+    if ciks is not None:
+        names = [n for n in names if n[3:13].isdigit() and int(n[3:13]) in ciks]
     tasks = [(str(zip_path), names[i:i + chunk]) for i in range(0, len(names), chunk)]
     parts = []
     with ProcessPoolExecutor(workers) as ex:
@@ -110,4 +112,5 @@ def build_facts(zip_path: Path = RAW / "sec" / "companyfacts.zip", workers: int 
 
 
 if __name__ == "__main__":
-    build_facts()
+    from peerrel.data.sec_meta import primary_tickers
+    build_facts(ciks=set(primary_tickers()["cik"]))

@@ -121,6 +121,36 @@ def rolling_quarterly(series: pd.Series, avail: pd.Series, window: str, min_obs:
     return v, a
 
 
+def fix_share_scale(cover: pd.Series, balance_sheet: pd.Series) -> pd.Series:
+    """Correct x1000 / /1000 scale errors in cover-page share counts (a common XBRL tagging error
+    around the 2019 cover-page tagging mandate). Reference = the latest balance-sheet share count
+    in the preceding 6 months, else the firm's previous cover value. Only ratios within [500, 2000]
+    (or the inverse) are treated as scale errors, so genuine stock splits are never altered."""
+    ref_bs = balance_sheet.dropna().reset_index().sort_values("m")
+    c = cover.dropna().reset_index().sort_values("m")
+    got = pd.merge_asof(c, ref_bs.rename(columns={balance_sheet.name or 0: "ref"}), on="m", by="cik",
+                        direction="backward", tolerance=6)
+    # sequential pass: the fallback reference is the previous *corrected* value, so runs of
+    # consecutive mis-scaled filings are all caught
+    got = got.sort_values(["cik", "m"]).reset_index(drop=True)
+    vals = got[cover.name or 0].to_numpy(dtype=float).copy()
+    refs = got["ref"].to_numpy(dtype=float)
+    ciks = got["cik"].to_numpy()
+    prev_cik, prev_val = None, np.nan
+    for i in range(len(vals)):
+        if ciks[i] != prev_cik:
+            prev_cik, prev_val = ciks[i], np.nan
+        ref = refs[i] if np.isfinite(refs[i]) else prev_val
+        if np.isfinite(ref) and ref > 0:
+            r = vals[i] / ref
+            if 500 <= r <= 2000:
+                vals[i] /= 1000
+            elif 1 / 2000 <= r <= 1 / 500:
+                vals[i] *= 1000
+        prev_val = vals[i]
+    return pd.Series(vals, index=pd.MultiIndex.from_frame(got[["cik", "m"]])).reindex(cover.index)
+
+
 def period_characteristics(facts: pd.DataFrame) -> pd.DataFrame:
     """Characteristic values per fiscal period (cik, m) with an `avail_<char>` column each."""
     flows = facts[facts["concept"].isin(FLOW_CONCEPTS) & facts["start"].notna()]
@@ -192,7 +222,7 @@ def period_characteristics(facts: pd.DataFrame) -> pd.DataFrame:
     # --- Levels needed later for valuation ratios and share issuance
     for c in ["net_income_ttm", "cfo_ttm", "revenue_ttm", "equity"]:
         res[c] = out(V[c], A[c])
-    shares = V["shares_out"].fillna(V["shares_out_bs"])
+    shares = fix_share_scale(V["shares_out"], V["shares_out_bs"]).fillna(V["shares_out_bs"])
     res["shares_out"] = out(shares, A["shares_out"].fillna(A["shares_out_bs"]))
 
     frame = pd.DataFrame({k: v for k, (v, _) in res.items()})

@@ -6,7 +6,7 @@ borrow_bps: 25.0             # general-collateral borrow fee on shorts (assumpti
 cost_multiplier: 1.0
 n_clusters: 50               # return-correlation peer clusters, refit each December
 optimiser:
-  risk_aversion: null        # set by `run.py calibrate` on development months only
+  risk_aversion: 8           # EXP-001: development-only calibration to 3% median ex-ante vol
   gross: 2.0
   name_cap: 0.01
   adv_cap: 0.05

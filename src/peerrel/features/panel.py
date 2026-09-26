@@ -95,6 +95,10 @@ def build_panel(period_chars: pd.DataFrame, px: pd.DataFrame, companies: pd.Data
     f_s = split_factor_at(px, panel["ticker"], share_date)
     panel["shares_adj"] = panel["shares_out"] * f_s
     panel["mcap"] = panel["shares_adj"] * panel["close"]
+    # second line of defence against share-count errors: daily dollar volume below 0.001% of
+    # market cap (turnover < ~0.25%/yr) is implausible for an exchange-listed stock
+    bad = (panel["adv_63d"] / panel["mcap"] < 1e-5) | (panel["mcap"] <= 0)
+    panel.loc[bad, ["mcap", "shares_adj"]] = np.nan
 
     panel = panel.sort_values(["ticker", "date"])
     lag12 = panel.groupby("ticker")["shares_adj"].shift(12)

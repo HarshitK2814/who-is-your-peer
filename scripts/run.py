@@ -88,11 +88,13 @@ def _dates(panel: pd.DataFrame, periods: list[str]) -> list[pd.Timestamp]:
     return sorted(out)
 
 
-def step_calibrate(target_vol: float = 0.06) -> None:
-    """Pick risk aversion so the median ex-ante vol of the C_FF49 book ~= target, using
-    every 4th development month only."""
+def step_calibrate(target_vol: float = 0.03) -> None:
+    """Pick risk aversion so the median ex-ante vol of the C_FF49 book ~= target, using every 4th
+    development month only (ex-ante risk only; no realised returns are looked at). Target 3%: with
+    gross exposure capped at 200%, a diversified beta-neutral book tops out near 3.5% ex-ante vol,
+    so 3% keeps the risk penalty (not the gross cap) in control."""
     conf_path = ROOT / "configs" / "backtest.yaml"
-    grid = [0.5, 1, 2, 4, 8, 16, 32]
+    grid = [2, 4, 8, 16, 32, 64, 128]
     results = {}
     for lam in grid:
         bt, panel = _load_backtest()
@@ -101,7 +103,7 @@ def step_calibrate(target_vol: float = 0.06) -> None:
         dates = _dates(panel, ["development"])[::4]
         res = bt.run(dates, RESULTS / "runs" / "calibration" / f"lam_{lam}")
         results[lam] = float(res["exante_vol"].median())
-        print(f"lambda={lam}: median ex-ante vol {results[lam]:.3%}")
+        print(f"lambda={lam}: median ex-ante vol {results[lam]:.3%}, median gross {res['gross_exposure'].median():.2f}")
     best = min(results, key=lambda l: abs(np.log(results[l] / target_vol)))
     conf = yaml.safe_load(conf_path.read_text())
     conf["optimiser"]["risk_aversion"] = best
@@ -118,9 +120,49 @@ def step_backtest(periods: list[str], tag: str, overrides: dict | None = None) -
     print("run:", run_id)
 
 
+def step_paper(signal_date: str) -> None:
+    """Simulated live evaluation (no real capital). Run AFTER the close of month-end `signal_date`
+    and BEFORE the next trading day; commit paper_trading/<YYYY-MM>/ immediately so the git
+    timestamp proves the weights preceded the outcome. Requires re-running `download` and
+    `build` first so the panel contains `signal_date`."""
+    t = pd.Timestamp(signal_date) + pd.offsets.MonthEnd(0)
+    bt, panel = _load_backtest()
+    dec = pd.Timestamp(year=t.year - 1, month=12, day=31)
+    dates = [d for d in panel.index.get_level_values("date").unique().sort_values() if dec <= d <= t]
+    if not dates or dates[-1] != t:
+        raise SystemExit(f"panel has no data for {t.date()} — rerun download/build after the month-end close")
+    out = ROOT / "paper_trading" / f"{t:%Y-%m}"
+    bt.run(dates, RESULTS / "runs" / f"paper_{t:%Y%m}")
+    w = pd.read_parquet(RESULTS / "runs" / f"paper_{t:%Y%m}" / "weights.parquet")
+    out.mkdir(parents=True, exist_ok=True)
+    w[w["date"] == t].to_csv(out / "weights.csv", index=False)
+    (out / "README.md").write_text(
+        f"# Paper portfolio formed on {t.date()}\n\nSimulated live evaluation, not real trading. Weights were "
+        f"generated after the {t.date()} close for execution at the next close. Outcome is recorded "
+        f"after the following month-end with `run.py paper-record {t:%Y-%m}`.\n")
+    print("wrote", out)
+
+
+def step_paper_record(month: str) -> None:
+    """Append the realised (net-of-model-cost) return of a previously committed paper portfolio."""
+    t = pd.Timestamp(month) + pd.offsets.MonthEnd(0)
+    rets = pd.read_parquet(RESULTS / "runs" / f"paper_{t:%Y%m}" / "returns.parquet")
+    panel = pd.read_parquet(PROCESSED / "panel.parquet", columns=["ticker", "ret_fwd"])
+    w = pd.read_csv(ROOT / "paper_trading" / f"{t:%Y-%m}" / "weights.csv")
+    realised = panel.loc[t].set_index("ticker")["ret_fwd"]
+    w["ret"] = w["ticker"].map(realised)
+    res = w.groupby("book").apply(lambda g: (g["w"] * g["ret"].fillna(0)).sum()).rename("gross_ret")
+    costs = rets[rets["date"] == t].set_index("book")[["cost", "borrow"]]
+    out = pd.concat([res, costs], axis=1)
+    out["net_ret_before_financing"] = out["gross_ret"] - out["cost"] - out["borrow"]
+    out.to_csv(ROOT / "paper_trading" / f"{t:%Y-%m}" / "realised.csv")
+    print(out)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["download", "build", "calibrate", "backtest"])
+    ap.add_argument("step", choices=["download", "build", "calibrate", "backtest", "paper", "paper-record"])
+    ap.add_argument("--date", help="signal month for paper steps, e.g. 2026-09")
     ap.add_argument("--period", default="development,validation")
     ap.add_argument("--tag", default="main")
     ap.add_argument("--set", nargs="*", default=[], help="config overrides key=value (robustness runs)")
@@ -132,5 +174,9 @@ if __name__ == "__main__":
         step_build()
     elif a.step == "calibrate":
         step_calibrate()
+    elif a.step == "paper":
+        step_paper(a.date)
+    elif a.step == "paper-record":
+        step_paper_record(a.date)
     else:
         step_backtest(a.period.split(","), a.tag, over)

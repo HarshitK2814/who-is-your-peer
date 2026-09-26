@@ -81,3 +81,12 @@ def test_stale_values_expire():
     pit = point_in_time(period, pd.DatetimeIndex(["2018-03-31", "2019-12-31"]))["x"].droplevel("cik")
     assert pit.loc["2018-03-31"] == 1.0
     assert np.isnan(pit.loc["2019-12-31"])
+
+
+def test_share_scale_errors_fixed_but_splits_kept():
+    from peerrel.features.fundamentals import fix_share_scale
+    idx = pd.MultiIndex.from_tuples([(1, m) for m in range(100, 112, 3)], names=["cik", "m"])
+    cover = pd.Series([80e6, 80e9, 80e6, 160e6], index=idx, name="shares_out")   # x1000 error, then a 2:1 split
+    bs = pd.Series([80e6, 80e6, 80e6, np.nan], index=idx, name="shares_out_bs")
+    fixed = fix_share_scale(cover, bs)
+    assert fixed.tolist() == [80e6, 80e6, 80e6, 160e6]

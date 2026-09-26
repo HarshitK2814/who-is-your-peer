@@ -36,6 +36,7 @@ class BacktestConfig:
     borrow_bps: float = 25.0
     cost_multiplier: float = 1.0
     n_clusters: int = 50
+    exclude_characteristics: list[str] = field(default_factory=list)   # robustness, e.g. ["mom_12_1"]
     books: list[str] = field(default_factory=lambda: (
         ["C_ALL"] + [f"C_{s}" for s in PEER_SCHEMES] + [f"CN_{s}" for s in PEER_SCHEMES]
         + [f"W_{s}" for s in PEER_SCHEMES] + [f"B_{s}" for s in PEER_SCHEMES]))
@@ -59,7 +60,10 @@ def book_signal(book: str, x: pd.DataFrame, labels: dict[str, pd.Series]) -> tup
     raw = composite(theme_scores(x, None))
     parts = decompose(raw.dropna(), labels[scheme].loc[raw.dropna().index])
     s = parts["within" if kind == "W" else "between"]
-    return (s - s.mean()) / s.std(ddof=0), None
+    sd = s.std(ddof=0)
+    if not np.isfinite(sd) or sd < 1e-8:          # e.g. a single peer group: no between-signal
+        return pd.Series(0.0, index=s.index), None
+    return (s - s.mean()) / sd, None
 
 
 class Backtest:
@@ -80,15 +84,34 @@ class Backtest:
         use_year = max([y for y in self.clusters if y < t.year], default=None)
         return self.clusters.get(use_year, pd.Series(dtype=float))
 
+    def _universe(self, t: pd.Timestamp) -> pd.DataFrame:
+        cfg = self.cfg
+        x = eligible(self.panel.loc[t], cfg).drop(columns=cfg.exclude_characteristics, errors="ignore")
+        themes_raw = theme_scores(x, None)
+        x = x[themes_raw.notna().sum(axis=1) >= 3]
+        return x.nlargest(cfg.universe_size, "mcap")
+
+    def _warmup_clusters(self, dec: pd.Timestamp) -> None:
+        """Fit return clusters at a December before the first backtest month (no trading)."""
+        x = self._universe(dec)
+        sig_day = self.months.loc[dec, "signal_day"]
+        window = self.daily_ret.loc[:sig_day].iloc[-252:].reindex(columns=x["ticker"])
+        rm = risk.estimate(window, self.ffd["Mkt-RF"], self.ffd["RF"])
+        tick_to_cik = pd.Series(x.index, index=x["ticker"].to_numpy())
+        self._cluster_labels(dec, rm, tick_to_cik)
+
     def run(self, dates: list[pd.Timestamp], out_dir: Path) -> pd.DataFrame:
         out_dir.mkdir(parents=True, exist_ok=True)
         cfg, opt = self.cfg, self.opt
         prev_w = {b: pd.Series(dtype=float) for b in cfg.books}
         rows, weights, ics = [], [], []
         t0 = time.time()
+        warm = pd.Timestamp(year=dates[0].year - 1, month=12, day=31)
+        if warm not in dates and warm in self.months.index:
+            self._warmup_clusters(warm)
         for i, t in enumerate(dates):
             sig_day = self.months.loc[t, "signal_day"]
-            x = eligible(self.panel.loc[t], cfg)
+            x = eligible(self.panel.loc[t], cfg).drop(columns=cfg.exclude_characteristics, errors="ignore")
             themes_raw = theme_scores(x, None)
             x = x[themes_raw.notna().sum(axis=1) >= 3]
             x = x.nlargest(cfg.universe_size, "mcap")
