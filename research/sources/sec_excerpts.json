@@ -1,0 +1,51 @@
+{
+  "ncsr_2021_market_neutral": {
+    "url": "https://www.sec.gov/Archives/edgar/data/1409957/000110465921029823/tm213573d6_ncsr.htm",
+    "retrieved": "2026-09-26",
+    "excerpts": [
+      "Although it’s important to understand how our overall performance is affected by broader macroeconomic and market factors, our approach to investing focuses on specific stock fundamentals and how companies rank relative to their industry peers.",
+      "Our model uses five themes—growth, quality, management decisions, sentiment, and valuation—to evaluate companies and generate a composite expected stock return.",
+      "We seek to capitalize on investor biases by taking long positions in the stocks that our model ranks high and by shorting those that score the lowest.",
+      "We aim to keep your fund’s sector exposures neutral, because our research has shown that sector bets do not add value over the long term."
+    ]
+  },
+  "497k_2026_market_neutral": {
+    "url": "https://www.sec.gov/Archives/edgar/data/1409957/000140995726000023/f44872d1.htm",
+    "retrieved": "2026-09-26",
+    "excerpts": [
+      "A net amount of fees is listed as Borrowing Expenses on Securities Sold Short. 3 Excluding borrowing and dividend expenses on securities sold short, the Total Annual Fund Operating Expenses are 0.20%. 1 Example This example is intended to help you compare the cost of investing in the Fund with the cost of investing in other funds.",
+      "Principal Investment Strategies The Fund employs an active management approach, following a market neutral strategy, which the Fund defines as a strategy designed to produce a portfolio that is neutral with respect to general stock market risk (sometimes referred to as beta neutrality).",
+      "The Fund, as a whole, does not seek to adhere to any other definition of market neutrality.",
+      "To implement the strategy, the advisor buys securities that it believes offer an appropriate balance between strong growth prospects and reasonable valuations relative to their industry peers and sells short securities that the advisor expects to be overvalued or have weak growth prospects, in amounts that it believes will achieve market neutrality.",
+      "By taking long and short positions in different securities, the Fund attempts to limit the effect of market movements on portfolio performance.",
+      "The advisor does this by using a quantitative process and may, at any time, buy or sell short any number of publicly traded, exchange-listed equity securities.",
+      "In addition, the advisor may emphasize specific industries, styles (growth/value), capitalization ranges, countries, or other factors.",
+      "The overall performance of the Fund depends on the net performance of its long and short positions.",
+      "It is possible for the Fund to experience a net loss across all positions; however, if the Fund’s investment strategy is successful, the net performance of its long and short positions will produce long-term capital appreciation that reflects the quality of the advisor’s security selections, with limited exposure to general stock market risk. 2 The Fund’s long/short market neutral investment strategy is an absolute-return investment approach seeking performance that exceeds the returns of 3-month U.S.",
+      "Treasury bills because, among other things, U.S.",
+      "Treasury bills are backed by the full faith and credit of the U.S. government, U.S.",
+      "Treasury bills have a fixed rate of return, investors in U.S.",
+      "Treasury bills have a very low risk of losing their investment, and an investment in the Fund is expected to be substantially more volatile than an investment in U.S.",
+      "Because of the Fund’s market neutral strategy, the Fund’s overall price movements are not expected to correlate with the general stock market’s price movements.",
+      "Different parts of the market, including different industries and sectors as well as different types of securities, may react differently to factors that affect the market.",
+      "These factors can contribute to market uncertainty, market volatility, and fluctuations in the value of the Fund’s investments, thereby resulting in potential losses to the Fund over short or long periods. • Market Neutral Strategy.",
+      "There is no guarantee that the Fund’s market neutral strategy will be successful.",
+      "In particular, the strategy may not limit the Fund’s exposure to general equity market risks, including risks associated with equity market movements, capitalization ranges, investment styles (such as growth or value), industry fluctuations, and other related factors.",
+      "The Fund’s use of both long and short positions may result in greater losses or lower positive returns than a strategy that employs only long positions.",
+      "Gains from short positions may be partially or fully offset by declines in long positions, and vice versa.",
+      "During periods of strong equity market performance, the Fund is expected to underperform the broader market, as losses from short positions may offset gains from long positions. 3 Additionally, it is possible that securities the Fund holds in long positions decline in value while securities held in short positions increase in value, thereby increasing losses to the Fund. • Short Selling.",
+      "The Fund may lose money in connection with its short sales of certain securities.",
+      "In a short sale, the Fund sells a security that it does not own and “borrows” the security from a third-party in order to settle the transaction with the original buyer.",
+      "The Fund can profit from a short sale if the price of the borrowed security declines before the Fund repurchases it.",
+      "Because there is no upward limit on how high the price of a borrowed security could rise, the Fund’s potential for loss in connection with a short sale is theoretically unlimited.",
+      "In addition, when the Fund sells short, it normally will incur two types of expenses, borrowing expenses and dividend expenses, both of which can increase the Fund’s expense ratio. • Investing in Equity Markets ."
+    ]
+  },
+  "ncsr_2019_equity_income": {
+    "url": "https://www.sec.gov/Archives/edgar/data/826473/000110465919068932/a19-22238_4ncsr.htm",
+    "retrieved": "2026-09-26",
+    "excerpts": [
+      "al year ended September 30, 2019, Vanguard Equity Income Fund returned well over 6%, surpassing its benchmark, which returned 5.37%. Your fund is managed by Wellington Management Company and Vanguard Quantitative Equity Group. The use of two investment advisors provides exposure to distinct yet complementary investment approaches, enhancing the diversification of your fund. It is not uncommon for different advisors to have different views about individual securities or the broader investment environment. The table below presents the percentage and amount of the fund’s assets that each advisor manages, as well as brief descriptions of their investment strategies. The advisors have also prepared a discussion of the investment environment that existed during the fiscal year and of how their portfolio positioning reflects this assessment. These comments were prepared on October 19, 2019. Wellington Management Company LLP Portfolio Manager: W. Michael Reckmeyer, III, CFA, Senior Managing Director and Equity Portfolio Manager U.S. equities rose for the third consecutive quarter amid a resilient domestic economy despite elevated geopolitical uncertainties and slowing global growth. U.S.-China trade relations remained volatile in the absence of meaningful compromises on key structural issues. Expectations for a protracted trade war and the potential for Vanguard Equity Income Fund Investment Advisors Fund Assets Managed Investment Advisor % $ Million Investment Strategy Wellington Management Company LLP 64 23,219 A fundamental approach to seeking desirable stocks. Our selections typically offer above-average dividend yields, below-average valuations, and the potential for dividend increases in the future. Vanguard Quantitative Equity Group 35 12,604 Employs a quantitative fundamental management approach, using models that assess valuation, growth prospects, management decisions, market sentiment, and earnings and balance-sheet quality of companies as compared with their peers. Cash Investments 1 627 These short-term reserves are invested by Vanguard in equity index products to simulate investment in stocks. Each advisor may also maintain a modest cash position. 3 a longer-term decoupling of the world’s two largest economies eroded consumer and business confidence and curtailed capital spending. Tensions eased in September ahead of high-level trade negotiations scheduled for October. The Federal Reserve lowered its benchmark interest rate in August and September by a combined 50 basis points in an effort to sustain the economic expansion and mitigate the risks of trade frictions and moderating growth. (One basis point is one-hundredth of a percentage point.) Du"
+    ]
+  }
+}

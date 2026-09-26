@@ -1,0 +1,6 @@
+# Evaluation periods (signal dates = calendar month-ends). Free-data (SEC XBRL) design:
+# XBRL begins 2009-2011, and characteristics need >= 2 years of filings, so development starts 2012.
+development: ["2012-01", "2016-12"]
+validation: ["2017-01", "2019-12"]
+test: ["2020-01", "2023-12"]        # locked until research/preregistration.md is committed
+recent: ["2024-01", null]           # reported separately; never used for any choice

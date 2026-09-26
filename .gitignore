@@ -1,0 +1,11 @@
+.env
+data/raw/
+data/interim/
+data/processed/
+results/runs/
+*.part
+__pycache__/
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+data/*.log

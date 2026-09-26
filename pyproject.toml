@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "peerrel"
+version = "0.1.0"
+description = "Who Is Your Peer? Industry-relative multi-theme signals in a beta-neutral long/short equity book."
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "pyarrow>=14",
+    "scipy>=1.11",
+    "statsmodels>=0.14",
+    "scikit-learn>=1.3",
+    "cvxpy>=1.4",
+    "matplotlib>=3.8",
+    "pyyaml>=6",
+    "requests>=2.31",
+    "yfinance>=0.2.40",
+    "tqdm>=4.66",
+    "qcore",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

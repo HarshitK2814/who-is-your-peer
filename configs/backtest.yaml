@@ -1,0 +1,14 @@
+# Frozen with the pre-registration. Any change after that = new logged experiment.
+universe_size: 1000          # top-N non-financial NYSE/Nasdaq stocks by market cap
+min_price: 5.0
+ic: 0.03                     # alpha scale (Grinold): alpha = IC * idio vol * score
+borrow_bps: 25.0             # general-collateral borrow fee on shorts (assumption, no free data)
+cost_multiplier: 1.0
+n_clusters: 50               # return-correlation peer clusters, refit each December
+optimiser:
+  risk_aversion: null        # set by `run.py calibrate` on development months only
+  gross: 2.0
+  name_cap: 0.01
+  adv_cap: 0.05
+  nav: 100000000             # capacity assumption: $100M
+  impact_y: 0.5
