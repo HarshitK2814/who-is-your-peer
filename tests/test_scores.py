@@ -45,3 +45,17 @@ def test_small_groups_pool_into_parent_then_all():
     assert (lab[:5] == "FF49:5").all()
     assert (lab[5:11] == "FF12:1").all()     # pooled residual of FF12 industry 1
     assert (lab[11:] == "ALL:0").all()       # FF12 industry 2 pool has only 3 -> full cross-section
+
+
+def test_theme_between_book_is_constant_within_industry():
+    from peerrel.backtest import book_signal
+    rng = np.random.default_rng(5)
+    n = 60
+    x = pd.DataFrame({c: rng.normal(size=n) for c in ["gp_to_assets", "accruals_neg", "leverage_neg", "cf_stability",
+                      "ext_financing_neg", "share_issuance_neg", "asset_growth_neg", "eps_persistence", "sales_growth",
+                      "mom_12_1", "sue", "earnings_yield", "book_to_market", "cfo_yield", "sales_yield"]})
+    lab = pd.Series(np.repeat(["FF49:1", "FF49:2", "FF49:3"], 20), index=x.index)
+    s, neutral = book_signal("BT_valuation.FF49", x, {"FF49": lab})
+    assert neutral is None
+    assert s.groupby(lab).nunique().max() == 1          # one value per industry
+    assert abs(s.mean()) < 1e-12

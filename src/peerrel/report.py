@@ -102,10 +102,17 @@ def figures(rets: pd.DataFrame, ics: pd.DataFrame, label: str, out: Path) -> Non
         for b, style in [(f"W_{s}", "-"), (f"B_{s}", "--"), (f"C_{s}", ":")]:
             ax.plot(wide.index, (1 + wide[b]).cumprod() - 1, style, label=b)
         ax.axhline(0, color="grey", lw=0.6)
+        if label == "full":   # shade evaluation periods
+            for (a, b, c) in [("2017-01-01", "2019-12-31", "#f2e6d9"), ("2020-01-01", "2023-12-31", "#dde8f5"),
+                              ("2024-01-01", "2026-12-31", "#e3f0e0")]:
+                ax.axvspan(pd.Timestamp(a), pd.Timestamp(b), color=c, zorder=0)
         ax.set_title(f"Peers: {s}")
         ax.legend(fontsize=7)
     axes[0].set_ylabel("cumulative net excess return")
-    fig.suptitle(f"Within- vs between-peer components ({label}; net of costs, $100M NAV)")
+    title = f"Within- vs between-peer components ({label}; net of costs, $100M NAV)"
+    if label == "full":
+        title += " — shaded: validation / TEST / recent"
+    fig.suptitle(title)
     fig.tight_layout()
     fig.savefig(out / f"within_between_{label}.png", dpi=150)
     plt.close(fig)

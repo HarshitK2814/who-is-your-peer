@@ -52,6 +52,14 @@ def eligible(x: pd.DataFrame, cfg: BacktestConfig) -> pd.DataFrame:
 def book_signal(book: str, x: pd.DataFrame, labels: dict[str, pd.Series]) -> tuple[pd.Series, str | None]:
     """Return (score, neutralisation scheme or None) for a book name like 'C_FF49'."""
     kind, scheme = book.split("_", 1)
+    if kind == "BT":   # post-hoc: industry mean of a single theme, e.g. "BT_valuation.FF49"
+        theme, scheme = scheme.split(".")
+        raw_theme = theme_scores(x, None)[theme].dropna()
+        s = raw_theme.groupby(labels[scheme].loc[raw_theme.index]).transform("mean")
+        sd = s.std(ddof=0)
+        if not np.isfinite(sd) or sd < 1e-8:
+            return pd.Series(0.0, index=s.index), None
+        return (s - s.mean()) / sd, None
     if kind == "C":
         grp = None if scheme == "ALL" else labels[scheme]
         return composite(theme_scores(x, grp)), None
