@@ -1,0 +1,184 @@
+{
+ "total": 81.052,
+ "segments": [
+  {
+   "id": "hook",
+   "start": 0.8,
+   "end": 12.032,
+   "duration": 11.232,
+   "captions": [
+    {
+     "text": "Almost every quant fund forces its portfolio to be industry-neutral.",
+     "start": 0.896,
+     "end": 5.271
+    },
+    {
+     "text": "One of the world's largest asset managers even told regulators why:",
+     "start": 5.656,
+     "end": 9.43
+    },
+    {
+     "text": "sector bets don't add value.",
+     "start": 9.995,
+     "end": 11.665
+    }
+   ]
+  },
+  {
+   "id": "gap",
+   "start": 12.532,
+   "end": 20.548,
+   "duration": 8.016,
+   "captions": [
+    {
+     "text": "But claims like that are almost never tested in the open.",
+     "start": 12.628,
+     "end": 15.369
+    },
+    {
+     "text": "The data is expensive, and most backtests quietly leak the future.",
+     "start": 15.753,
+     "end": 20.212
+    }
+   ]
+  },
+  {
+   "id": "solution",
+   "start": 21.048,
+   "end": 32.016,
+   "duration": 10.968,
+   "captions": [
+    {
+     "text": "So we rebuilt the model from free public filings.",
+     "start": 21.144,
+     "end": 24.089
+    },
+    {
+     "text": "2.7 million facts, each used only after it became public,",
+     "start": 24.486,
+     "end": 29.341
+    },
+    {
+     "text": "with the test period locked in code before we looked.",
+     "start": 29.341,
+     "end": 31.685
+    }
+   ]
+  },
+  {
+   "id": "demo",
+   "start": 32.516,
+   "end": 41.06,
+   "duration": 8.544,
+   "captions": [
+    {
+     "text": "And you can explore all of it.",
+     "start": 32.612,
+     "end": 33.766
+    },
+    {
+     "text": "Switch the universe, the peer definition, or the time period,",
+     "start": 34.139,
+     "end": 37.816
+    },
+    {
+     "text": "and every statistic is recomputed live.",
+     "start": 38.213,
+     "end": 40.713
+    }
+   ]
+  },
+  {
+   "id": "result",
+   "start": 41.56,
+   "end": 49.528,
+   "duration": 7.968,
+   "captions": [
+    {
+     "text": "In the locked test, industry bets earned a Sharpe ratio of 0.68.",
+     "start": 41.62,
+     "end": 46.62
+    },
+    {
+     "text": "The claim survives, but only narrowly.",
+     "start": 47.029,
+     "end": 49.168
+    }
+   ]
+  },
+  {
+   "id": "twist",
+   "start": 50.028,
+   "end": 60.588,
+   "duration": 10.56,
+   "captions": [
+    {
+     "text": "Then the twist.",
+     "start": 50.136,
+     "end": 50.893
+    },
+    {
+     "text": "The market-neutral book wasn't neutral.",
+     "start": 51.278,
+     "end": 53.201
+    },
+    {
+     "text": "Its real market beta was 0.15.",
+     "start": 53.598,
+     "end": 56.47
+    },
+    {
+     "text": "Hedge it out, and the Sharpe falls to 0.46.",
+     "start": 56.879,
+     "end": 60.232
+    }
+   ]
+  },
+  {
+   "id": "threed",
+   "start": 61.088,
+   "end": 71.672,
+   "duration": 10.584,
+   "captions": [
+    {
+     "text": "In 3D, watch industries move month by month,",
+     "start": 61.184,
+     "end": 64.694
+    },
+    {
+     "text": "and see which stocks really trade together.",
+     "start": 65.078,
+     "end": 66.893
+    },
+    {
+     "text": "Nearly half of the statistical peer groups cross official sectors.",
+     "start": 67.278,
+     "end": 71.304
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": 72.172,
+   "end": 78.652,
+   "duration": 6.48,
+   "captions": [
+    {
+     "text": "Who is your peer?",
+     "start": 72.292,
+     "end": 72.917
+    },
+    {
+     "text": "Open research, pre-registered, with every bug on the record.",
+     "start": 73.29,
+     "end": 77.016
+    },
+    {
+     "text": "Link in the comments.",
+     "start": 77.4,
+     "end": 78.302
+    }
+   ]
+  }
+ ]
+}

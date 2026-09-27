@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Who Is Your Peer? · launch video v2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=block">
+<style>
+  :root { --bg:#07080a; --ink:#f5f4f0; --ink2:#b4b3ac; --muted:#7a7973; --blue:#3b8cf0; --orange:#f2733d; --aqua:#22bf8a; --line:#23262b;
+          --cond:"IBM Plex Sans Condensed","Arial Narrow",sans-serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",Consolas,monospace; }
+  html,body { margin:0; background:var(--bg); }
+  #stage { position:relative; width:1080px; height:1350px; overflow:hidden; background:var(--bg); color:var(--ink); font-family:var(--sans); }
+  .aur { position:absolute; border-radius:50%; filter:blur(140px); }
+  #grain { position:absolute; inset:0; opacity:.07; mix-blend-mode:screen; pointer-events:none; }
+  .layer { position:absolute; inset:0; }
+  .head { position:absolute; left:80px; right:80px; top:150px; font-family:var(--cond); font-weight:700; font-size:92px; line-height:.98; letter-spacing:-.012em; }
+  .eyebrow { position:absolute; left:80px; top:96px; font-family:var(--mono); font-size:24px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .sub { font-family:var(--cond); font-weight:600; font-size:56px; line-height:1.05; color:var(--ink2); }
+  .o{color:var(--orange)} .b{color:var(--blue)} .a{color:var(--aqua)}
+  /* captions */
+  #cap { position:absolute; left:70px; right:70px; bottom:92px; display:flex; justify-content:center; }
+  #cap span { font-size:36px; line-height:1.3; font-weight:500; text-align:center; background:rgba(12,13,15,.72); border:1px solid rgba(255,255,255,.08);
+              padding:12px 22px; border-radius:14px; backdrop-filter:blur(6px); max-width:900px; }
+  /* browser window */
+  #win { position:absolute; left:60px; top:330px; width:960px; border-radius:18px; overflow:hidden; background:#fbfbfa;
+         box-shadow:0 40px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08); transform-origin:50% 50%; }
+  #win .bar { height:46px; background:#eceeed; display:flex; align-items:center; gap:9px; padding:0 18px; border-bottom:1px solid #dcdedd; }
+  #win .dot { width:13px; height:13px; border-radius:50%; }
+  #win .url { margin-left:18px; flex:1; height:28px; border-radius:8px; background:#fff; display:flex; align-items:center; padding:0 14px;
+              font-family:var(--mono); font-size:15px; color:#6b6d6f; }
+  #viewport { position:relative; width:960px; height:628px; overflow:hidden; background:#fbfbfa; }
+  #rec { position:absolute; left:0; top:0; width:960px; height:628px; transform-origin:0 0; }
+  /* cards */
+  .card { position:absolute; background:rgba(18,20,23,.9); border:1px solid rgba(255,255,255,.1); border-radius:22px; padding:28px 32px;
+          box-shadow:0 30px 80px rgba(0,0,0,.5); }
+  .quote { font-family:var(--cond); font-weight:700; font-size:88px; line-height:1.02; }
+  .attr { font-family:var(--mono); font-size:24px; color:var(--ink2); margin-top:22px; }
+  .chip { display:flex; gap:22px; align-items:center; font-size:40px; font-weight:500; padding:26px 30px; }
+  .chip i { width:46px; height:46px; border-radius:50%; background:rgba(242,115,61,.14); border:2px solid var(--orange); position:relative; flex:none; }
+  .chip i::before,.chip i::after { content:""; position:absolute; left:21px; top:10px; width:3px; height:24px; background:var(--orange); border-radius:2px; }
+  .chip i::before { transform:rotate(45deg); } .chip i::after { transform:rotate(-45deg); }
+  .node { position:absolute; left:80px; width:920px; display:flex; gap:26px; align-items:center; }
+  .node .n { width:84px; height:84px; border-radius:22px; display:grid; place-items:center; font-family:var(--mono); font-size:30px; font-weight:500; flex:none; }
+  .node .t { font-size:40px; font-weight:600; line-height:1.15; } .node .d { font-size:28px; color:var(--ink2); margin-top:4px; }
+  #pipe { position:absolute; left:121px; width:3px; background:linear-gradient(var(--blue),var(--orange)); border-radius:2px; }
+  .big { font-family:var(--cond); font-weight:700; font-size:230px; line-height:.85; letter-spacing:-.02em; }
+  .stat-k { font-size:36px; color:var(--ink2); line-height:1.3; }
+  .pill { display:inline-flex; align-items:center; gap:14px; font-size:34px; font-weight:600; padding:18px 30px; border-radius:999px;
+          background:var(--ink); color:#0b0b0c; }
+  svg text { font-family:var(--sans); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="aur" id="au1"></div><div class="aur" id="au2"></div><div class="aur" id="au3"></div>
+  <canvas id="grain" width="540" height="675"></canvas>
+
+  <!-- HOOK -->
+  <div class="layer" id="L-hook">
+    <div class="eyebrow" id="h-e">The problem</div>
+    <div class="head" id="h-1">Almost every quant fund makes its portfolio <span class="b">industry-neutral</span>.</div>
+    <div class="card" id="h-q" style="left:80px;right:80px;top:640px">
+      <div class="quote"><span class="o">“</span>Sector bets don't add value.<span class="o">”</span></div>
+      <div class="attr">One of the world's largest asset managers · in a filing to regulators</div>
+    </div>
+  </div>
+
+  <!-- GAP -->
+  <div class="layer" id="L-gap">
+    <div class="eyebrow">The gap</div>
+    <div class="head" id="g-1">Claims like that are almost never tested in the open.</div>
+    <div class="card chip" id="g-c1" style="left:80px;right:80px;top:640px"><i></i>Clean historical data costs thousands</div>
+    <div class="card chip" id="g-c2" style="left:80px;right:80px;top:790px"><i></i>Most backtests quietly leak the future</div>
+    <div class="card chip" id="g-c3" style="left:80px;right:80px;top:940px"><i></i>Results get tuned after the fact</div>
+  </div>
+
+  <!-- SOLUTION -->
+  <div class="layer" id="L-solution">
+    <div class="eyebrow">What we built</div>
+    <div class="head" id="s-1" style="font-size:84px">Rebuilt from free public filings.</div>
+    <div id="pipe" style="top:520px;height:0"></div>
+    <div class="node" id="s-n1" style="top:470px"><div class="n" style="background:rgba(59,140,240,.16);color:var(--blue)">01</div><div><div class="t"><span id="s-cnt">0</span> filing facts</div><div class="d">Straight from public regulatory data</div></div></div>
+    <div class="node" id="s-n2" style="top:640px"><div class="n" style="background:rgba(59,140,240,.16);color:var(--blue)">02</div><div><div class="t">Used only after they were public</div><div class="d">No look-ahead, tested in code</div></div></div>
+    <div class="node" id="s-n3" style="top:810px"><div class="n" style="background:rgba(242,115,61,.16);color:var(--orange)">03</div><div><div class="t">1,000 stocks, market-neutral</div><div class="d">Real trading costs and borrow fees</div></div></div>
+    <div class="node" id="s-n4" style="top:980px"><div class="n" style="background:rgba(242,115,61,.16);color:var(--orange)">04</div><div><div class="t">Test period locked in code</div><div class="d">Hypotheses committed before we looked</div></div></div>
+  </div>
+
+  <!-- PRODUCT WINDOW (demo / twist / threed) -->
+  <div class="layer" id="L-product">
+    <div class="eyebrow" id="p-e">Live demo</div>
+    <div class="head" id="p-h" style="font-size:72px"></div>
+    <div id="win">
+      <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div class="url">who-is-your-peer · interactive research</div></div>
+      <div id="viewport"><img id="rec" alt=""></div>
+    </div>
+    <div class="card" id="p-stat" style="right:34px;top:880px;padding:22px 28px;display:flex;gap:26px;align-items:center;background:rgba(14,16,19,.94)">
+      <div class="big o" id="p-stat-v" style="font-size:110px">0.15</div><div class="stat-k" id="p-stat-k" style="font-size:30px;max-width:420px"></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="layer" id="L-result">
+    <div class="eyebrow">The result · locked test, 2020–23</div>
+    <div style="position:absolute;left:80px;top:170px;display:flex;align-items:flex-end;gap:36px">
+      <div class="big o" id="r-v">0.00</div>
+      <div class="stat-k" style="padding-bottom:22px">Sharpe ratio of<br><b style="color:var(--ink)">industry bets</b>, net of costs</div>
+    </div>
+    <svg id="r-ch" width="920" height="520" style="position:absolute;left:80px;top:470px;overflow:visible"></svg>
+    <div class="sub" id="r-t" style="position:absolute;left:80px;right:80px;top:1040px;font-size:50px">p = 0.085. The claim survives, <span class="o">but only narrowly.</span></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="layer" id="L-cta">
+    <div style="position:absolute;left:80px;right:80px;top:330px;display:grid;gap:40px">
+      <div class="eyebrow" style="position:static">Open quant research</div>
+      <div class="big" id="c-t" style="font-size:170px">Who Is<br>Your Peer?</div>
+      <div class="sub" id="c-s" style="font-size:46px">Pre-registered. Reproducible. Every bug on the record.</div>
+      <div id="c-p"><span class="pill">Link in the comments <span style="font-size:30px">↓</span></span></div>
+    </div>
+  </div>
+
+  <div id="cap"><span id="cap-t"></span></div>
+</div>
+
+<script id="tl" type="application/json">/*TIMELINE*/</script>
+<script id="recmeta" type="application/json">/*RECMETA*/</script>
+<script id="d1" type="application/json">/*DATA*/</script>
+<script>
+const TL = JSON.parse(document.getElementById("tl").textContent);
+const RM = JSON.parse(document.getElementById("recmeta").textContent);
+const D = JSON.parse(document.getElementById("d1").textContent);
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const ease = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const out = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const P = (t, a, b) => clamp((t - a) / (b - a));
+const SEG = Object.fromEntries(TL.segments.map((s) => [s.id, s]));
+window.DURATION = TL.total;
+const cap = (id, k) => SEG[id].captions[k];
+
+function show(el, t, at, dur = .6, dy = 34, blur = true) {
+  const p = out(P(t, at, at + dur));
+  el.style.opacity = p; el.style.transform = `translateY(${(1 - p) * dy}px)`;
+  el.style.filter = blur ? `blur(${(1 - p) * 8}px)` : "none";
+}
+function layerAlpha(t, a, b) { return Math.min(out(P(t, a - .15, a + .35)), 1 - ease(P(t, b - .1, b + .4))); }
+
+// ---------- grain (static noise texture, re-seeded per frame for film feel) ----------
+const g = $("grain").getContext("2d"), gi = g.createImageData(540, 675);
+function grain(seed) { let s = seed * 9301 + 49297; for (let i = 0; i < gi.data.length; i += 4) { s = (s * 9301 + 49297) % 233280; const v = (s / 233280) * 255;
+  gi.data[i] = gi.data[i + 1] = gi.data[i + 2] = v; gi.data[i + 3] = 255; } g.putImageData(gi, 0, 0); }
+
+// ---------- result chart ----------
+const NS = "http://www.w3.org/2000/svg";
+function mkChart() {
+  const svg = $("r-ch"), W = 920, H = 520, m = { l: 70, r: 190, t: 10, b: 44 };
+  const i0 = D.dates.indexOf("2020-01"), i1 = D.dates.indexOf("2023-12");
+  const cum = (a) => { let w = 1; return a.slice(i0, i1 + 1).map((v) => (w *= 1 + (v ?? 0)) - 1); };
+  const B = cum(D.series.top1000.B_FF49), Wn = cum(D.series.top1000.W_FF49);
+  const all = B.concat(Wn), lo = Math.min(0, ...all) - .03, hi = Math.max(...all) + .03, n = B.length;
+  const x = (i) => m.l + i / (n - 1) * (W - m.l - m.r), y = (v) => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+  const el = (t, a, p = svg) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+  for (const v of [-.2, -.1, 0, .1, .2, .3]) { if (v < lo || v > hi) continue;
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: v === 0 ? "#3a3d42" : "#1c1e22", "stroke-width": 1.5 });
+    const t = el("text", { x: m.l - 14, y: y(v) + 8, "text-anchor": "end", fill: "#7a7973", "font-size": 22 }); t.textContent = Math.round(v * 100) + "%"; }
+  ["2020-01", "2021-01", "2022-01", "2023-01"].forEach((d) => { const i = D.dates.indexOf(d) - i0;
+    const t = el("text", { x: x(i), y: H - 8, "text-anchor": "middle", fill: "#7a7973", "font-size": 22 }); t.textContent = d.slice(0, 4); });
+  const defs = el("defs", {}), cp = el("clipPath", { id: "rc" }, defs), clip = el("rect", { x: 0, y: -20, width: 0, height: H + 40 }, cp);
+  const grd = el("linearGradient", { id: "fillg", x1: 0, x2: 0, y1: 0, y2: 1 }, defs);
+  el("stop", { offset: "0%", "stop-color": "#f2733d", "stop-opacity": .35 }, grd); el("stop", { offset: "100%", "stop-color": "#f2733d", "stop-opacity": 0 }, grd);
+  const grp = el("g", { "clip-path": "url(#rc)" });
+  const path = (a) => a.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("");
+  el("path", { d: path(B) + `L${x(n - 1)} ${y(0)} L${x(0)} ${y(0)} Z`, fill: "url(#fillg)" }, grp);
+  el("path", { d: path(Wn), fill: "none", stroke: "#3b8cf0", "stroke-width": 5, "stroke-linecap": "round", "stroke-linejoin": "round" }, grp);
+  el("path", { d: path(B), fill: "none", stroke: "#f2733d", "stroke-width": 6, "stroke-linecap": "round", "stroke-linejoin": "round" }, grp);
+  const lb = el("text", { x: x(n - 1) + 16, y: y(B[n - 1]) + 9, fill: "#f2733d", "font-size": 30, "font-weight": 600 }); lb.textContent = "Industry bets";
+  const lw = el("text", { x: x(n - 1) + 16, y: y(Wn[n - 1]) + 9, fill: "#3b8cf0", "font-size": 30, "font-weight": 600 }); lw.textContent = "Within industries";
+  return (p) => { clip.setAttribute("width", m.l + p * (W - m.l - m.r) + 10); lb.setAttribute("opacity", clamp((p - .92) * 12)); lw.setAttribute("opacity", clamp((p - .92) * 12)); };
+}
+const drawResult = mkChart();
+
+// ---------- recordings: which clip, frame, and a cursor-following camera ----------
+const REC = {
+  demo:   { seg: "demo",   start: 0.0 },
+  twist:  { seg: "twist",  start: 1.25 },
+  threed: { seg: "threed", start: 0.0 },
+};
+function smoothCursor(log, i, k = 14) {
+  let sx = 0, sy = 0, sw = 0;
+  for (let j = Math.max(0, i - k); j <= Math.min(log.length - 1, i + k); j++) { const w = 1 - Math.abs(j - i) / (k + 1); sx += log[j].cursor[0] * w; sy += log[j].cursor[1] * w; sw += w; }
+  return [sx / sw, sy / sw];
+}
+const VW = 1100, VH = 720, SCALE = 960 / 1100;
+function camera(scene, lt, fi) {
+  const meta = RM[scene], log = meta.log, i = Math.min(fi, log.length - 1);
+  let [cx, cy] = smoothCursor(log, i);
+  let z = 1.0;
+  if (scene === "demo") z = lt < 4.4 ? 1.55 : 1.22;
+  if (scene === "twist") z = lt < 5.8 ? 1.25 : 1.45;
+  if (scene === "threed") { z = lt < 6.4 ? 1.3 : 1.35; cy = lt < 6.4 ? 520 : Math.max(cy, 420); cx = lt < 6.4 ? 420 : cx; }
+  z = z * (0.985 + 0.015 * Math.sin(lt * 0.9));                // gentle breathing
+  // keep the image covering the viewport
+  const vw = VW / z, vh = VH / z;
+  cx = clamp(cx, vw / 2, VW - vw / 2); cy = clamp(cy, vh / 2, VH - vh / 2);
+  return { z, cx, cy };
+}
+let camState = null;
+function applyCamera(target) {
+  // critically-damped follow so zoom changes glide instead of cutting
+  if (!camState) camState = { ...target };
+  for (const k of ["z", "cx", "cy"]) camState[k] += (target[k] - camState[k]) * 0.14;
+  const { z, cx, cy } = camState;
+  const tx = -(cx - VW / (2 * z)) * z * SCALE, ty = -(cy - VH / (2 * z)) * z * SCALE;
+  $("rec").style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
+}
+
+async function setRec(scene, fi) {
+  const img = $("rec"), n = RM[scene].frames, f = Math.max(0, Math.min(n - 1, fi));
+  const src = `../rec/${scene}/f${String(f).padStart(5, "0")}.jpg`;
+  if (img.getAttribute("src") !== src) { img.src = src; try { await img.decode(); } catch (e) {} }
+}
+
+// ---------- render ----------
+let lastScene = null;
+window.render = async function (t, stepIndex) {
+  grain(stepIndex ?? Math.floor(t * 30));
+  // aurora drift
+  const a1 = $("au1"), a2 = $("au2"), a3 = $("au3");
+  Object.assign(a1.style, { width: "900px", height: "900px", background: "#1f5fbf", opacity: .30, left: (-260 + 120 * Math.sin(t / 7)) + "px", top: (-300 + 90 * Math.cos(t / 9)) + "px" });
+  Object.assign(a2.style, { width: "800px", height: "800px", background: "#c2542a", opacity: .22, left: (520 + 110 * Math.cos(t / 8)) + "px", top: (760 + 120 * Math.sin(t / 10)) + "px" });
+  Object.assign(a3.style, { width: "600px", height: "600px", background: "#167a5c", opacity: t > SEG.threed.start - 1 ? .20 : .08, left: (300 + 80 * Math.sin(t / 6)) + "px", top: (380 + 60 * Math.cos(t / 5)) + "px" });
+
+  const L = (id, a, b) => { const e = $("L-" + id), v = t < a - .2 || t > b + .5 ? 0 : layerAlpha(t, a, b); e.style.opacity = v; e.style.visibility = v > .001 ? "visible" : "hidden"; return v; };
+  const S = (id) => SEG[id];
+  L("hook", 0, S("gap").start - .25);
+  L("gap", S("gap").start - .1, S("solution").start - .25);
+  L("solution", S("solution").start - .1, S("demo").start - .3);
+  L("result", S("result").start - .1, S("twist").start - .25);
+  L("cta", S("cta").start - .1, TL.total + 5);
+
+  // hook
+  show($("h-e"), t, .3); show($("h-1"), t, .5, .8, 50); show($("h-q"), t, cap("hook", 1).start - .2, .7, 60);
+  $("h-q").style.transform += ` scale(${1 + .03 * out(P(t, cap("hook", 2).start, cap("hook", 2).start + .5))})`;
+  // gap
+  show($("g-1"), t, S("gap").start + .1, .7, 50);
+  ["g-c1", "g-c2", "g-c3"].forEach((id, k) => show($(id), t, cap("gap", 1).start + k * .55, .55, 40));
+  // solution
+  show($("s-1"), t, S("solution").start + .1, .7, 50);
+  ["s-n1", "s-n2", "s-n3", "s-n4"].forEach((id, k) => show($(id), t, [cap("solution", 0).start + 1.0, cap("solution", 1).start + 1.2, cap("solution", 1).start + 2.6, cap("solution", 2).start + .4][k], .55, 30));
+  $("pipe").style.height = (510 * out(P(t, cap("solution", 0).start + 1.0, cap("solution", 2).start + .9))) + "px";
+  $("s-cnt").textContent = (2.717 * out(P(t, cap("solution", 1).start, cap("solution", 1).start + 1.6))).toFixed(1) + "M";
+
+  // product window: demo -> twist -> threed
+  const inDemo = t >= S("demo").start - .2 && t < S("result").start - .25;
+  const inTwist = t >= S("twist").start + REC.twist.start - .3 && t < S("threed").start - .25;
+  const inThreed = t >= S("threed").start - .2 && t < S("cta").start - .25;
+  const prodA = Math.max(inDemo ? layerAlpha(t, S("demo").start, S("result").start - .25) : 0,
+                         inTwist ? layerAlpha(t, S("twist").start + REC.twist.start, S("threed").start - .25) : 0,
+                         inThreed ? layerAlpha(t, S("threed").start, S("cta").start - .25) : 0,
+                         (t >= S("twist").start - .1 && t < S("twist").start + REC.twist.start) ? layerAlpha(t, S("twist").start, S("twist").start + 60) : 0);
+  const Lp = $("L-product"); Lp.style.opacity = prodA; Lp.style.visibility = prodA > .001 ? "visible" : "hidden";
+  let scene = inDemo ? "demo" : inThreed ? "threed" : inTwist ? "twist" : null;
+  const win = $("win");
+  if (t >= S("twist").start - .1 && t < S("twist").start + REC.twist.start) {       // "Then the twist." beat
+    $("p-e").textContent = "Plot twist"; $("p-h").innerHTML = 'The <span class="o">market-neutral</span> book wasn\'t neutral.';
+    show($("p-h"), t, S("twist").start, .6, 50); win.style.opacity = 0; $("p-stat").style.opacity = 0;
+  }
+  if (scene) {
+    const segStart = S(REC[scene].seg).start + REC[scene].start, lt = t - segStart, fi = Math.floor(lt * 30);
+    if (scene !== lastScene) { camState = null; lastScene = scene; }
+    await setRec(scene, fi);
+    applyCamera(camera(scene, lt, fi));
+    const wIn = out(P(t, segStart - .2, segStart + .6));
+    win.style.opacity = wIn;
+    win.style.transform = `perspective(1600px) rotateX(${(1 - wIn) * 10}deg) translateY(${(1 - wIn) * 70}px) scale(${.96 + .04 * wIn})`;
+    if (scene === "demo") { $("p-e").textContent = "Live demo"; $("p-h").innerHTML = 'Explore every result. <span class="b">Live.</span>'; show($("p-h"), t, segStart, .6, 40); $("p-stat").style.opacity = 0; }
+    if (scene === "twist") {
+      $("p-e").textContent = "Plot twist"; $("p-h").innerHTML = 'The <span class="o">market-neutral</span> book wasn\'t neutral.'; $("p-h").style.opacity = 1; $("p-h").style.transform = "none"; $("p-h").style.filter = "none";
+      const c2 = cap("twist", 2), c3 = cap("twist", 3);
+      if (t < c3.start - .2) { $("p-stat-v").textContent = "β " + (0.15 * out(P(t, c2.start, c2.start + 1.4))).toFixed(2); $("p-stat-k").innerHTML = "real market beta in the test period,<br>despite a zero-beta constraint"; $("p-stat-v").className = "big o"; }
+      else { $("p-stat-v").textContent = "0.46"; $("p-stat-k").innerHTML = "Sharpe after hedging the hidden beta<br>(down from 0.68)"; $("p-stat-v").className = "big b"; }
+      show($("p-stat"), t, c2.start - .1, .55, 40, false);
+    }
+    if (scene === "threed") {
+      $("p-e").textContent = "In 3D"; $("p-h").innerHTML = 'Watch industries move. See <span class="a">who trades together.</span>'; show($("p-h"), t, segStart, .6, 40);
+      const c = cap("threed", 2);
+      $("p-stat-v").textContent = "44%"; $("p-stat-v").className = "big a"; $("p-stat-k").innerHTML = "of statistical peer groups<br>cross official sectors";
+      show($("p-stat"), t, c.start, .55, 40, false);
+    }
+  }
+  // result
+  const rs = S("result");
+  $("r-v").textContent = (0.68 * out(P(t, rs.start + .3, rs.start + 2.6))).toFixed(2);
+  drawResult(ease(P(t, rs.start + .4, rs.start + 4.2)));
+  show($("r-t"), t, cap("result", 1).start - .1, .6, 30);
+  // cta
+  const cs = S("cta");
+  show($("c-t"), t, cs.start, .8, 60); show($("c-s"), t, cap("cta", 1).start, .6, 30); show($("c-p"), t, cap("cta", 2).start - .1, .6, 30);
+  // captions
+  let text = "";
+  for (const s of TL.segments) for (const c of s.captions) if (t >= c.start - .08 && t <= c.end + .3) text = c.text;
+  $("cap-t").textContent = text;
+  $("cap").style.opacity = text ? 1 : 0;
+  return true;
+};
+window.ready = (async () => { await document.fonts.ready; await window.render(0, 0); return true; })();
+</script>
+</body>
+</html>

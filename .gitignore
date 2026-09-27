@@ -9,3 +9,12 @@ __pycache__/
 .ipynb_checkpoints/
 .pytest_cache/
 data/*.log
+video/build/
+video/still_*.png
+video/v2/build/
+video/v2/rec/
+video/v2/audio/
+# v1 video names the asset manager; kept local only
+video/who_is_your_peer_linkedin.mp4
+video/composition.html
+video/poster.png

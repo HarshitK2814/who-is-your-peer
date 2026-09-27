@@ -1,0 +1,773 @@
+<title>Who Is Your Peer?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f5f6f5;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --ring: rgba(11,11,11,0.10);
+  --accent: #2a78d6;
+  --band: rgba(42,120,214,0.07);
+  --band-test: rgba(42,120,214,0.14);
+  --s-within: #2a78d6;
+  --s-between: #eb6834;
+  --s-comp: #1baf7a;
+  --good: #006300;
+  --bad: #b3261e;
+  --chip-bg: #eceeec;
+  --chip-on: #0b0b0b;
+  --chip-on-ink: #ffffff;
+  --quote: #eef2f7;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cond: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #111211; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --accent: #3987e5;
+    --band: rgba(57,135,229,0.08); --band-test: rgba(57,135,229,0.17);
+    --s-within: #3987e5; --s-between: #d95926; --s-comp: #199e70;
+    --good: #0ca30c; --bad: #e66767; --chip-bg: #262725; --chip-on: #ffffff; --chip-on-ink: #0b0b0b; --quote: #1d232b;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111211; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --accent: #3987e5;
+  --band: rgba(57,135,229,0.08); --band-test: rgba(57,135,229,0.17);
+  --s-within: #3987e5; --s-between: #d95926; --s-comp: #199e70;
+  --good: #0ca30c; --bad: #e66767; --chip-bg: #262725; --chip-on: #ffffff; --chip-on-ink: #0b0b0b; --quote: #1d232b;
+}
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--cond); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -0.005em; }
+h1 { font-size: clamp(34px, 5.2vw, 54px); line-height: 1.02; }
+h2 { font-size: clamp(24px, 3vw, 30px); line-height: 1.1; }
+h3 { font-size: 18px; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 18px; color: var(--ink-2); max-width: 62ch; }
+header { display: grid; gap: 18px; }
+.answers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 8px; }
+.answers div { border-top: 2px solid var(--ink); padding-top: 10px; display: grid; gap: 4px; }
+.answers b { font-family: var(--cond); font-size: 19px; font-weight: 600; }
+.answers span { color: var(--ink-2); font-size: 14px; }
+section { display: grid; gap: 18px; }
+.panel { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 20px; display: grid; gap: 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; }
+.ctl { display: grid; gap: 6px; }
+.ctl > span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--chip-bg); border-radius: 8px; padding: 3px; gap: 2px; }
+.seg button { font: 500 13px var(--sans); color: var(--ink-2); background: transparent; border: 0; border-radius: 6px; padding: 6px 11px; cursor: pointer; }
+.seg button:hover:not(:disabled) { color: var(--ink); background: var(--ring); }
+.seg button[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+.seg button:disabled { opacity: 0.38; cursor: not-allowed; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--sans); font-size: 11px; fill: var(--muted); }
+.chart .lbl { font-size: 12px; font-weight: 600; fill: var(--ink); }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); min-width: 170px; z-index: 5; }
+.tip .t { font-family: var(--mono); color: var(--muted); margin-bottom: 4px; }
+.tip .r { display: flex; align-items: center; gap: 8px; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.tip .r i { width: 10px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend i.dash { background: repeating-linear-gradient(90deg, currentColor 0 5px, transparent 5px 8px) !important; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; font-variant-numeric: tabular-nums; }
+th { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+td.name { display: flex; align-items: center; gap: 8px; }
+td.name i { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
+.pos { color: var(--good); } .neg { color: var(--bad); }
+.note { font-size: 13px; color: var(--muted); max-width: 80ch; }
+.two { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); gap: 28px; align-items: start; }
+.quote { background: var(--quote); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; }
+.quote blockquote { margin: 0; font-size: 17px; line-height: 1.45; font-style: italic; }
+.quote cite { font-style: normal; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.hold { color: var(--ink-2); } .pill.fail { color: var(--muted); }
+table.wrap td, table.wrap th { white-space: normal; }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; counter-reset: s; }
+.steps div { display: grid; gap: 6px; align-content: start; }
+.steps div::before { counter-increment: s; content: "Step " counter(s); font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.steps b { font-family: var(--cond); font-size: 17px; font-weight: 600; }
+.steps span { color: var(--ink-2); font-size: 14px; }
+ul.limits { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 80ch; color: var(--ink-2); }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--grid); padding-top: 18px; }
+code { font-family: var(--mono); font-size: 0.92em; }
+.plot3d { width: 100%; height: clamp(360px, 62vw, 560px); }
+.view { display: grid; gap: 12px; }
+.tabs button { font-size: 14px; padding: 7px 14px; }
+.play { font: 600 13px var(--sans); background: var(--chip-on); color: var(--chip-on-ink); border: 0; border-radius: 6px; padding: 7px 14px; cursor: pointer; min-width: 64px; }
+#ls-slider { flex: 1 1 260px; accent-color: var(--accent); }
+.readout { font-family: var(--mono); font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+@media (max-width: 820px) {
+  .answers, .two, .steps { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) { .seg button { transition: background 120ms, color 120ms; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Quant research · US equities 2012–2026 · free data only</div>
+    <h1>Who Is Your Peer?</h1>
+    <p class="lede">Vanguard's quantitative equity team told the SEC that its five-theme stock model ranks companies against
+      their industry peers, and that "sector bets do not add value over the long term." I rebuilt the model from public
+      filings, split its signal into a within-industry part and an industry-bet part, and tested the claim with the
+      hypotheses frozen before the test period was run.</p>
+    <div class="answers">
+      <div><b>The claim survives, narrowly.</b><span>Industry bets earned a test-period Sharpe of 0.68, but p = 0.085 after
+        multiple-testing correction. The pre-registered verdict is "not contradicted".</span></div>
+      <div><b>A third of it was hidden beta.</b><span>The "beta-neutral" industry book had a realised market beta of 0.15 in
+        2020–23 (0.19 alongside the other factors), because daily-return betas understate true betas. Hedged, its Sharpe falls from 0.68 to 0.46.</span></div>
+      <div><b>What's left is earnings news.</b><span>The remaining premium comes from the industry-level sentiment theme
+        (earnings surprises), not from industry momentum. Industry-level quality was a consistent drag.</span></div>
+    </div>
+  </header>
+
+  <section id="explorer">
+    <div class="eyebrow">Explore the backtest</div>
+    <h2>Within-industry selection vs industry bets</h2>
+    <p class="note">Every line is a beta-neutral long/short book, net of modelled spread and impact costs and a 25 bp/yr
+      borrow fee, at a $100M fund size. The composite ranks stocks within peer groups; the within and between books
+      are its two halves. All statistics below are recomputed in your browser from the monthly returns.</p>
+    <div class="panel">
+      <div class="controls">
+        <div class="ctl"><span>Universe</span><div class="seg" id="c-universe"></div></div>
+        <div class="ctl"><span>Peer definition</span><div class="seg" id="c-scheme"></div></div>
+        <div class="ctl"><span>Variant</span><div class="seg" id="c-variant"></div></div>
+        <div class="ctl"><span>Market beta</span><div class="seg" id="c-hedge"></div></div>
+        <div class="ctl"><span>Period</span><div class="seg" id="c-period"></div></div>
+      </div>
+      <div class="legend" id="lg-main"></div>
+      <div class="chart" id="ch-main"></div>
+      <div class="tablewrap"><table id="tb-main"></table></div>
+      <p class="note" id="nt-main"></p>
+    </div>
+  </section>
+
+  <section id="claim">
+    <div class="eyebrow">The claim and the pre-registered test</div>
+    <div class="two">
+      <div class="quote">
+        <blockquote>"We aim to keep your fund's sector exposures neutral, because our research has shown that sector bets do
+          not add value over the long term."</blockquote>
+        <cite>Vanguard Market Neutral Fund, Advisor's Report · Form N-CSR · Vanguard Montgomery Funds (CIK 1409957) ·
+          accession 0001104659-21-029823 · filed 2021-03-01</cite>
+        <p class="note">The 2026 prospectus (497K, accession 0001409957-26-000023) commits only to beta neutrality and lets
+          the advisor "emphasize specific industries". That change in wording is what this project tests.</p>
+      </div>
+      <div class="tablewrap">
+        <table class="wrap">
+          <thead><tr><th>Hypothesis · test 2020–23</th><th>Estimate</th><th>Verdict</th></tr></thead>
+          <tbody>
+            <tr><td>H1 · industry bets earn a premium</td><td>Sharpe 0.68, p = 0.085</td><td><span class="pill hold">claim not contradicted</span></td></tr>
+            <tr><td>H2 · peer definition matters</td><td>−0.23 / +0.10</td><td><span class="pill fail">not detected</span></td></tr>
+            <tr><td>H3 · industry neutrality matters</td><td>+0.01, p = 0.96</td><td><span class="pill fail">not detected</span></td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:10px">Hypotheses, metrics and decision rules were committed to git
+          (<code>prereg: freeze</code>) before any 2020–23 month was computed. The test period was locked in code until then.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="beta">
+    <div class="eyebrow">Finding · exploratory</div>
+    <h2>The "neutral" book wasn't neutral</h2>
+    <p>Each month the optimiser forced the industry-bet book's estimated beta to zero, and it complied to within 0.000004.
+      Its realised beta was still 0.15 in 2020–23 (0.19, t = 3.9, estimated alongside the other Fama–French factors). Betas estimated from daily returns understate the true beta
+      of less-synchronously traded stocks, and betting on whole industries concentrates the error. The dashed line hedges
+      that exposure using only the book's past 36 months of returns.</p>
+    <div class="panel">
+      <div class="controls"><div class="ctl"><span>Universe</span><div class="seg" id="c-beta-universe"></div></div></div>
+      <div class="legend" id="lg-beta"></div>
+      <div class="chart" id="ch-beta"></div>
+      <div class="tablewrap"><table id="tb-beta"></table></div>
+    </div>
+  </section>
+
+  <section id="themes">
+    <div class="eyebrow">Finding · exploratory</div>
+    <h2>Which theme carries the industry premium?</h2>
+    <p>The industry-bet book averages five theme components. Traded one at a time and beta-hedged, the sentiment component
+      (earnings surprises and momentum averaged by industry) is the most persistent contributor. Its correlation with a
+      standard industry-momentum factor is only 0.01–0.24, which points to slowly spreading industry earnings news. Quality
+      at the industry level lost money.</p>
+    <div class="panel">
+      <div class="controls"><div class="ctl"><span>Period</span><div class="seg" id="c-theme-period"></div></div></div>
+      <div class="legend" id="lg-theme"></div>
+      <div class="chart" id="ch-theme"></div>
+      <p class="note">Beta-hedged net Sharpe per theme. 30 theme × universe × period cells were examined after the test
+        results were known, so none is claimed as statistically significant.</p>
+    </div>
+  </section>
+
+  <section id="three-d">
+    <div class="eyebrow">Explore in 3D · drag to rotate, scroll to zoom, hover for detail</div>
+    <h2>Three views a flat chart can't give</h2>
+    <div class="panel">
+      <div class="seg tabs" id="c-3d-tab"></div>
+
+      <div id="v-landscape" class="view">
+        <p><b>The industry landscape.</b> Each bubble is one of the ~40 Fama–French industries in the universe that month,
+          placed by the industry's average <em>sentiment</em> and <em>valuation</em> scores. Height is the industry's return over
+          the <em>following</em> month (CRSP-based, survivorship-free). Colour is what the industry-bet book held: blue long,
+          red short. If the scores predicted anything, high-sentiment bubbles would float higher.</p>
+        <div class="controls">
+          <button type="button" class="play" id="ls-play" aria-label="Play months">Play</button>
+          <input type="range" id="ls-slider" min="0" max="0" value="0" aria-label="Month">
+          <span class="readout" id="ls-readout"></span>
+        </div>
+        <div class="plot3d" id="p-landscape"></div>
+        <p class="note">Rank correlation between the industry composite score and next-month industry return averages
+          0.045 in the 2020–23 test period (t = 1.6), about zero in 2024–26 and 0.006 over 2012–26: a weak, regime-dependent
+          signal, consistent with the backtest.</p>
+      </div>
+
+      <div id="v-peers" class="view" hidden>
+        <p><b>Who is actually your peer?</b> 1,000 stocks (December 2023) placed by how their daily returns co-move after
+          removing the market: the first three principal components of the residual-return correlation matrix. Colour is the
+          official sector. Pick a statistical cluster, the peer groups the backtest used in 2024, to see which stocks
+          trade together.</p>
+        <div class="controls">
+          <div class="ctl"><span>Highlight a return cluster</span><div class="seg" id="c-cluster"></div></div>
+        </div>
+        <div class="plot3d" id="p-peers"></div>
+        <p class="note" id="nt-peers"></p>
+      </div>
+
+      <div id="v-regime" class="view" hidden>
+        <p><b>Regimes.</b> Rolling 24-month Sharpe ratio of each book over time, as a surface. Peaks and valleys that don't
+          line up across rows are the components taking turns: industry bets led in 2020–23, within-industry selection and
+          industry sentiment led in 2024–26.</p>
+        <div class="plot3d" id="p-regime"></div>
+        <p class="note">Correlation between the rolling Sharpe of within-industry selection and of industry bets: −0.13.
+          Blue is positive and red negative; grey marks zero.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="data">
+    <div class="eyebrow">Data honesty</div>
+    <h2>What free data can and can't show</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>How much of the market the free data sees</h3>
+        <div class="chart" id="ch-cov"></div>
+        <p class="note">Share of large non-financial SEC filers (assets ≥ $1bn) present in the priced universe, relative to
+          2025. Free prices only cover companies still listed today, so the early years miss many firms that later
+          delisted.</p>
+      </div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <ul class="limits">
+          <li>Absolute Sharpe ratios are biased upward by survivorship, especially before 2020. The study compares books built on the same universe.</li>
+          <li>Industry codes are current, not historical. Trading costs and borrow fees are modelled, not measured.</li>
+          <li>The five themes are my reconstruction; Vanguard does not disclose its variables. Nothing here describes the fund's own returns.</li>
+          <li>48 test months cannot detect Sharpe differences much below 0.8. A CRSP replication back to 1990 is the next step.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="eyebrow">How it was built</div>
+    <div class="steps">
+      <div><b>Point-in-time fundamentals</b><span>2.7M as-first-reported XBRL facts from SEC bulk data. Each number is used only from the day after it was filed.</span></div>
+      <div><b>Peer-relative scores</b><span>15 characteristics in 5 themes, ranked within FF12, FF49, SIC-3 or return-correlation peer groups.</span></div>
+      <div><b>Beta-neutral optimiser</b><span>Factor risk model, 200% gross, spread and square-root impact costs, borrow fees, top 1000 US stocks.</span></div>
+      <div><b>Locked test, logged search</b><span>Pre-registered hypotheses, a test period locked in code, and every experiment and bug fix kept in an append-only log.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Research artifact, not investment advice. Paper-trading results, when added, are simulated.</span>
+    <span>Data: SEC EDGAR (companyfacts, submissions), Yahoo Finance, Kenneth R. French Data Library. Signals are formed at the month-end close and traded at the next day's close.</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script id="showcase-3d" type="application/json">/*DATA3D*/</script>
+<script id="showcase-data" type="application/json">/*DATA*/</script>
+<script>
+(function () {
+  "use strict";
+  const D = JSON.parse(document.getElementById("showcase-data").textContent);
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const NS = "http://www.w3.org/2000/svg";
+  const idx = (ym) => D.dates.indexOf(ym);
+
+  // ---------- stats ----------
+  function stats(r) {
+    const x = r.filter((v) => v !== null && Number.isFinite(v));
+    const n = x.length;
+    if (n < 3) return null;
+    const m = x.reduce((a, b) => a + b, 0) / n;
+    const sd = Math.sqrt(x.reduce((a, b) => a + (b - m) ** 2, 0) / (n - 1));
+    const srm = m / sd;
+    const se = Math.sqrt((1 + 0.5 * srm * srm) / n) * Math.sqrt(12);
+    let w = 1, peak = 1, dd = 0;
+    for (const v of x) { w *= 1 + v; peak = Math.max(peak, w); dd = Math.min(dd, w / peak - 1); }
+    return { n, ann: m * 12, vol: sd * Math.sqrt(12), sharpe: srm * Math.sqrt(12), lo: srm * Math.sqrt(12) - 1.96 * se,
+             hi: srm * Math.sqrt(12) + 1.96 * se, mdd: dd, total: w - 1 };
+  }
+  // hedge market beta with the book's own trailing 36 months (min 24), past data only
+  function hedge(r) {
+    const out = new Array(r.length).fill(null);
+    for (let t = 0; t < r.length; t++) {
+      const ys = [], ms = [];
+      for (let k = Math.max(0, t - 36); k < t; k++) {
+        if (r[k] !== null && D.mkt[k] !== null) { ys.push(r[k]); ms.push(D.mkt[k]); }
+      }
+      if (ys.length < 24 || r[t] === null || D.mkt[t] === null) continue;
+      const my = ys.reduce((a, b) => a + b, 0) / ys.length, mm = ms.reduce((a, b) => a + b, 0) / ms.length;
+      let c = 0, v = 0;
+      for (let i = 0; i < ys.length; i++) { c += (ys[i] - my) * (ms[i] - mm); v += (ms[i] - mm) ** 2; }
+      out[t] = r[t] - (c / v) * D.mkt[t];
+    }
+    return out;
+  }
+  function slicePeriod(arr, p) {
+    const [a, b] = D.periods[p];
+    return { vals: arr.slice(idx(a), idx(b) + 1), dates: D.dates.slice(idx(a), idx(b) + 1), mkt: D.mkt.slice(idx(a), idx(b) + 1) };
+  }
+  // realised beta of a period slice against the SAME months of the market factor
+  function beta(r, mkt) {
+    const pairs = r.map((v, i) => [v, mkt[i]]).filter(([v, m]) => v !== null && m !== null);
+    const my = pairs.reduce((a, p) => a + p[0], 0) / pairs.length, mm = pairs.reduce((a, p) => a + p[1], 0) / pairs.length;
+    let c = 0, v = 0;
+    for (const [y, m] of pairs) { c += (y - my) * (m - mm); v += (m - mm) ** 2; }
+    return c / v;
+  }
+
+  // ---------- formatting ----------
+  const pct = (v, d = 1) => (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(d) + "%";
+  const num = (v, d = 2) => (v >= 0 ? "" : "−") + Math.abs(v).toFixed(d);
+  const cls = (v) => (v >= 0 ? "pos" : "neg");
+  const monthName = (ym) => { const [y, m] = ym.split("-"); return new Date(+y, +m - 1, 1).toLocaleString("en", { month: "short" }) + " " + y; };
+
+  // ---------- segmented controls ----------
+  function seg(id, options, value, onChange) {
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+    el.setAttribute("role", "group");
+    for (const o of options) {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = o.label; b.dataset.v = o.value;
+      b.setAttribute("aria-pressed", String(o.value === value));
+      b.disabled = !!o.disabled;
+      b.addEventListener("click", () => onChange(o.value));
+      el.appendChild(b);
+    }
+  }
+
+  // ---------- line chart ----------
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function niceTicks(lo, hi, n) {
+    const span = hi - lo || 1, raw = span / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((s) => s * mag).find((s) => span / s <= n) || 10 * mag;
+    const out = [];
+    for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function lineChart(host, dates, series, opts) {
+    host.innerHTML = "";
+    const W = Math.max(320, host.clientWidth), H = opts.height || Math.round(Math.min(380, Math.max(240, W * 0.42)));
+    const m = { l: 48, r: opts.endLabels ? 96 : 14, t: 12, b: 26 };
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opts.aria || "line chart" }, host);
+    const all = series.flatMap((s) => s.values.filter((v) => v !== null));
+    let lo = Math.min(0, ...all), hi = Math.max(0, ...all);
+    const pad = (hi - lo) * 0.08 || 0.01; lo -= pad; hi += pad;
+    const x = (i) => m.l + (i / Math.max(1, dates.length - 1)) * (W - m.l - m.r);
+    const y = (v) => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+    // period bands
+    for (const band of opts.bands || []) {
+      const a = dates.indexOf(band.from), b = dates.indexOf(band.to);
+      if (a < 0 || b < 0) continue;
+      el("rect", { x: x(a), y: m.t, width: Math.max(1, x(b) - x(a)), height: H - m.t - m.b, fill: css(band.test ? "--band-test" : "--band") }, svg);
+      const t = el("text", { x: x(a) + 5, y: m.t + 13 }, svg); t.textContent = band.label;
+    }
+    // grid + y ticks
+    for (const v of niceTicks(lo, hi, 5)) {
+      el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: css(v === 0 ? "--axis" : "--grid"), "stroke-width": 1 }, svg);
+      const t = el("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end" }, svg);
+      t.textContent = opts.yFmt ? opts.yFmt(v) : v;
+    }
+    // x ticks: years
+    const step = dates.length > 90 ? 2 : 1;
+    dates.forEach((d, i) => {
+      const [yy, mm] = d.split("-");
+      if (mm === "01" && (+yy % step === 0)) {
+        el("line", { x1: x(i), x2: x(i), y1: H - m.b, y2: H - m.b + 4, stroke: css("--axis") }, svg);
+        const t = el("text", { x: x(i), y: H - 8, "text-anchor": "middle" }, svg); t.textContent = yy;
+      }
+    });
+    // lines
+    const ends = [];
+    for (const s of series) {
+      let dpath = "", pen = false;
+      s.values.forEach((v, i) => {
+        if (v === null) { pen = false; return; }
+        dpath += (pen ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1);
+        pen = true;
+      });
+      el("path", { d: dpath, fill: "none", stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+                   "stroke-dasharray": s.dash ? "6 4" : "none" }, svg);
+      let li = s.values.length - 1; while (li > 0 && s.values[li] === null) li--;
+      if (s.values[li] !== null) ends.push({ s, yv: y(s.values[li]), xv: x(li) });
+    }
+    // direct end labels, nudged apart
+    if (opts.endLabels) {
+      ends.sort((a, b) => a.yv - b.yv);
+      for (let i = 1; i < ends.length; i++) if (ends[i].yv - ends[i - 1].yv < 15) ends[i].yv = ends[i - 1].yv + 15;
+      for (const e of ends) {
+        el("circle", { cx: e.xv, cy: y(e.s.values[e.s.values.length - 1] ?? 0), r: 4, fill: e.s.color, stroke: css("--surface"), "stroke-width": 2 }, svg);
+        const t = el("text", { x: e.xv + 10, y: e.yv + 4, class: "lbl" }, svg); t.textContent = e.s.short || e.s.name;
+      }
+    }
+    // crosshair + tooltip
+    const cross = el("line", { y1: m.t, y2: H - m.b, stroke: css("--axis"), "stroke-width": 1, visibility: "hidden" }, svg);
+    const dots = series.map((s) => el("circle", { r: 4, fill: s.color, stroke: css("--surface"), "stroke-width": 2, visibility: "hidden" }, svg));
+    const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; host.appendChild(tip);
+    const hit = el("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" }, svg);
+    function move(ev) {
+      const rect = svg.getBoundingClientRect();
+      const px = ((ev.clientX - rect.left) / rect.width) * W;
+      const i = Math.max(0, Math.min(dates.length - 1, Math.round(((px - m.l) / (W - m.l - m.r)) * (dates.length - 1))));
+      cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+      let rows = "";
+      series.forEach((s, k) => {
+        const v = s.values[i];
+        if (v === null) { dots[k].setAttribute("visibility", "hidden"); return; }
+        dots[k].setAttribute("cx", x(i)); dots[k].setAttribute("cy", y(v)); dots[k].setAttribute("visibility", "visible");
+        rows += `<div class="r"><span><i style="background:${s.color}"></i> ${s.name}</span><b>${opts.yFmt ? opts.yFmt(v) : v.toFixed(3)}</b></div>`;
+      });
+      tip.innerHTML = `<div class="t">${monthName(dates[i])}</div>${rows}`;
+      tip.hidden = false;
+      const hostRect = host.getBoundingClientRect();
+      const left = (x(i) / W) * rect.width + (rect.left - hostRect.left);
+      tip.style.left = (left + 190 > hostRect.width ? left - 190 : left + 14) + "px";
+      tip.style.top = "8px";
+    }
+    hit.addEventListener("pointermove", move);
+    hit.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dots.forEach((d) => d.setAttribute("visibility", "hidden")); });
+  }
+
+  // ---------- bar chart (grouped, vertical) ----------
+  function barChart(host, cats, groups, opts) {
+    host.innerHTML = "";
+    const W = Math.max(320, host.clientWidth), H = opts.height || 280;
+    const m = { l: 44, r: 10, t: 16, b: 30 };
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opts.aria || "bar chart" }, host);
+    const all = groups.flatMap((g) => g.values);
+    let lo = Math.min(0, ...all), hi = Math.max(0, ...all);
+    if (opts.domain) [lo, hi] = opts.domain;
+    const pad = (hi - lo) * 0.1; lo = Math.min(lo, lo - (lo < 0 ? pad : 0)); hi += pad;
+    const y = (v) => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+    for (const v of niceTicks(lo, hi, 5)) {
+      el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: css(v === 0 ? "--axis" : "--grid") }, svg);
+      const t = el("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end" }, svg); t.textContent = opts.yFmt ? opts.yFmt(v) : v;
+    }
+    const band = (W - m.l - m.r) / cats.length, inner = band * 0.72, bw = Math.min(34, (inner - 2 * (groups.length - 1)) / groups.length);
+    const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; host.appendChild(tip);
+    cats.forEach((c, ci) => {
+      const x0 = m.l + ci * band + (band - (bw * groups.length + 2 * (groups.length - 1))) / 2;
+      groups.forEach((g, gi) => {
+        const v = g.values[ci], x = x0 + gi * (bw + 2);
+        const top = Math.min(y(v), y(0)), h = Math.max(1, Math.abs(y(v) - y(0)));
+        const r = Math.min(4, bw / 2, h);
+        // rounded data-end, square baseline end
+        const d = v >= 0
+          ? `M${x} ${y(0)} V${top + r} Q${x} ${top} ${x + r} ${top} H${x + bw - r} Q${x + bw} ${top} ${x + bw} ${top + r} V${y(0)} Z`
+          : `M${x} ${y(0)} V${top + h - r} Q${x} ${top + h} ${x + r} ${top + h} H${x + bw - r} Q${x + bw} ${top + h} ${x + bw} ${top + h - r} V${y(0)} Z`;
+        const p = el("path", { d, fill: g.color }, svg);
+        const hitR = el("rect", { x: x - 1, y: m.t, width: bw + 2, height: H - m.t - m.b, fill: "transparent" }, svg);
+        const show = (ev) => {
+          p.setAttribute("opacity", "0.8");
+          tip.innerHTML = `<div class="t">${c}</div><div class="r"><span><i style="background:${g.color}"></i> ${g.name}</span><b>${opts.yFmt ? opts.yFmt(v) : v.toFixed(2)}</b></div>` + (opts.extra ? opts.extra(ci, gi) : "");
+          tip.hidden = false;
+          const hostRect = host.getBoundingClientRect(), rect = svg.getBoundingClientRect();
+          const left = ((x + bw) / W) * rect.width + (rect.left - hostRect.left);
+          tip.style.left = (left + 190 > hostRect.width ? left - 200 : left + 8) + "px";
+          tip.style.top = "8px";
+        };
+        hitR.addEventListener("pointerenter", show);
+        hitR.addEventListener("pointerleave", () => { p.setAttribute("opacity", "1"); tip.hidden = true; });
+      });
+      const t = el("text", { x: m.l + ci * band + band / 2, y: H - 10, "text-anchor": "middle" }, svg); t.textContent = c;
+    });
+  }
+
+  function legend(id, items) {
+    document.getElementById(id).innerHTML = items.map((s) =>
+      `<span><i class="${s.dash ? "dash" : ""}" style="background:${s.color};color:${s.color}"></i>${s.name}</span>`).join("");
+  }
+
+  // ---------- explorer ----------
+  const S = { universe: "top1000", scheme: "FF49", variant: "base", hedge: "raw", period: "full" };
+  const SCHEMES = [["FF12", "FF12"], ["FF49", "FF49"], ["SIC3", "SIC-3"], ["RCLUST", "Return clusters"]];
+  const PERIODS = [["full", "2012–26"], ["development", "Dev 12–16"], ["validation", "Val 17–19"], ["test", "Test 20–23"], ["recent", "Recent 24–26"]];
+  function runKey() { return S.universe === "top500" ? "top500" : ({ base: "top1000", cost2x: "cost2x", nomom: "nomom" })[S.variant]; }
+
+  function drawExplorer() {
+    seg("c-universe", [{ value: "top1000", label: "Top 1000" }, { value: "top500", label: "Top 500" }], S.universe,
+        (v) => { S.universe = v; if (v === "top500") S.variant = "base"; drawExplorer(); });
+    seg("c-scheme", SCHEMES.map(([v, l]) => ({ value: v, label: l })), S.scheme, (v) => { S.scheme = v; drawExplorer(); });
+    seg("c-variant", [{ value: "base", label: "Base" }, { value: "cost2x", label: "Costs ×2", disabled: S.universe === "top500" },
+                      { value: "nomom", label: "No momentum", disabled: S.universe === "top500" }], S.variant, (v) => { S.variant = v; drawExplorer(); });
+    seg("c-hedge", [{ value: "raw", label: "As traded" }, { value: "hedged", label: "Beta-hedged" }], S.hedge, (v) => { S.hedge = v; drawExplorer(); });
+    seg("c-period", PERIODS.map(([v, l]) => ({ value: v, label: l })), S.period, (v) => { S.period = v; drawExplorer(); });
+
+    const run = D.series[runKey()];
+    const defs = [
+      { key: "W_" + S.scheme, name: "Within-industry selection", short: "Within", color: css("--s-within") },
+      { key: "B_" + S.scheme, name: "Industry bets", short: "Industry bets", color: css("--s-between") },
+      { key: "C_" + S.scheme, name: "Peer-relative composite", short: "Composite", color: css("--s-comp") },
+    ];
+    const rows = [], lines = [];
+    let dates = null;
+    for (const d of defs) {
+      let r = run[d.key].slice();
+      if (S.hedge === "hedged") r = hedge(r);
+      const sl = slicePeriod(r, S.period);
+      dates = sl.dates;
+      let w = 1, started = false;
+      const cum = sl.vals.map((v) => { if (v === null) return started ? w - 1 : null; started = true; w *= 1 + v; return w - 1; });
+      lines.push({ name: d.name, short: d.short, color: d.color, values: cum });
+      rows.push({ d, st: stats(sl.vals), b: beta(sl.vals, sl.mkt) });
+    }
+    legend("lg-main", lines);
+    const bands = S.period === "full" ? [
+      { from: "2017-01", to: "2019-12", label: "validation" },
+      { from: "2020-01", to: "2023-12", label: "pre-registered test", test: true },
+      { from: "2024-01", to: "2026-07", label: "recent" }] : [];
+    lineChart(document.getElementById("ch-main"), dates, lines,
+      { endLabels: true, bands, yFmt: (v) => (v * 100).toFixed(0) + "%", aria: "Cumulative net excess return of three books" });
+    document.getElementById("tb-main").innerHTML =
+      `<thead><tr><th>Book</th><th>Months</th><th>Return / yr</th><th>Vol / yr</th><th>Sharpe</th><th>95% CI</th><th>Max drawdown</th><th>Realised beta</th></tr></thead><tbody>` +
+      rows.map(({ d, st, b }) => st ? `<tr><td class="name"><i style="background:${d.color}"></i>${d.name}</td><td>${st.n}</td>
+        <td class="${cls(st.ann)}">${pct(st.ann)}</td><td>${(st.vol * 100).toFixed(1)}%</td><td class="${cls(st.sharpe)}"><b>${num(st.sharpe)}</b></td>
+        <td>[${num(st.lo)}, ${num(st.hi)}]</td><td>${pct(st.mdd)}</td><td>${num(b)}</td></tr>` : "").join("") + "</tbody>";
+    const hedgeNote = S.hedge === "hedged" ? " Beta-hedged: each month subtracts the book's trailing 36-month market beta (past data only); the first 24 months have no hedge estimate." : "";
+    document.getElementById("nt-main").textContent =
+      `Net monthly excess returns over T-bills. Sharpe CI uses Lo (2002) standard errors.${hedgeNote}` +
+      (S.universe === "top1000" && S.variant === "base" ? "" : " This is a pre-registered robustness variant, not the primary test.");
+  }
+
+  // ---------- beta leak ----------
+  let betaUniverse = "top1000";
+  function drawBeta() {
+    seg("c-beta-universe", [{ value: "top1000", label: "Top 1000" }, { value: "top500", label: "Top 500" }], betaUniverse,
+        (v) => { betaUniverse = v; drawBeta(); });
+    const raw = D.series[betaUniverse]["B_FF49"], hed = hedge(raw);
+    const cum = (arr) => { let w = 1, s = false; return arr.map((v) => { if (v === null) return s ? w - 1 : null; s = true; w *= 1 + v; return w - 1; }); };
+    const color = css("--s-between");
+    const lines = [{ name: "Industry bets, as traded", short: "As traded", color, values: cum(raw) },
+                   { name: "Industry bets, beta-hedged", short: "Beta-hedged", color, dash: true, values: cum(hed) }];
+    legend("lg-beta", lines);
+    lineChart(document.getElementById("ch-beta"), D.dates, lines, { endLabels: true, height: 260,
+      bands: [{ from: "2020-01", to: "2023-12", label: "pre-registered test", test: true }],
+      yFmt: (v) => (v * 100).toFixed(0) + "%", aria: "Industry-bet book with and without market-beta hedge" });
+    const per = [["test", "Test 2020–23"], ["full", "2012–26"], ["recent", "Recent 2024–26"]];
+    document.getElementById("tb-beta").innerHTML = `<thead><tr><th>Period</th><th>Realised beta</th><th>Sharpe as traded</th><th>Sharpe beta-hedged</th></tr></thead><tbody>` +
+      per.map(([p, l]) => { const sa0 = slicePeriod(raw, p), a = sa0.vals, h = slicePeriod(hed, p).vals, sa = stats(a), sh = stats(h);
+        return `<tr><td>${l}</td><td>${num(beta(a, sa0.mkt))}</td><td class="${cls(sa.sharpe)}">${num(sa.sharpe)}</td><td class="${cls(sh.sharpe)}"><b>${num(sh.sharpe)}</b></td></tr>`; }).join("") + "</tbody>";
+  }
+
+  // ---------- themes ----------
+  let themePeriod = "test";
+  const THEMES = ["sentiment", "management", "valuation", "growth", "quality"];
+  const THEME_LABEL = { sentiment: "Sentiment", management: "Management", valuation: "Valuation", growth: "Growth", quality: "Quality" };
+  function drawThemes() {
+    seg("c-theme-period", [{ value: "test", label: "Test 2020–23" }, { value: "full", label: "2012–26" }, { value: "recent", label: "Recent 2024–26" }],
+        themePeriod, (v) => { themePeriod = v; drawThemes(); });
+    const groups = [["themes_top1000", "Top 1000", "--s-within"], ["themes_top500", "Top 500", "--s-between"]].map(([k, n, c]) => ({
+      name: n, color: css(c), values: THEMES.map((t) => { const st = stats(slicePeriod(hedge(D.series[k][t]), themePeriod).vals); return st ? st.sharpe : 0; }) }));
+    legend("lg-theme", groups);
+    barChart(document.getElementById("ch-theme"), THEMES.map((t) => THEME_LABEL[t]), groups,
+      { yFmt: (v) => v.toFixed(1), aria: "Beta-hedged Sharpe of each theme's industry component" });
+  }
+
+  // ---------- coverage ----------
+  function drawCoverage() {
+    const c = D.coverage;
+    barChart(document.getElementById("ch-cov"), c.years.map((y) => "’" + String(y).slice(2)),
+      [{ name: "Coverage vs 2025", color: css("--s-within"), values: c.normalised }],
+      { height: 220, domain: [0, 1], yFmt: (v) => Math.round(v * 100) + "%", aria: "Survivorship coverage by year",
+        extra: (ci) => `<div class="r"><span>Year end</span><b>${c.years[ci]}</b></div>` });
+  }
+
+  // =================== 3D views (Plotly) ===================
+  const D3 = JSON.parse(document.getElementById("showcase-3d").textContent);
+  const hasPlotly = typeof window.Plotly !== "undefined";
+  const PCONF = { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["toImage", "resetCameraLastSave3d"] };
+  const isDark = () => getComputedStyle(document.documentElement).colorScheme.includes("dark");
+  function diverging() {
+    const mid = isDark() ? "#383835" : "#f0efec";
+    return [[0, isDark() ? "#e66767" : "#e34948"], [0.5, mid], [1, isDark() ? "#3987e5" : "#2a78d6"]];
+  }
+  function axis(title, extra) {
+    return Object.assign({ title: { text: title, font: { size: 12, color: css("--ink-2") } }, color: css("--muted"),
+      gridcolor: css("--grid"), zerolinecolor: css("--axis"), showbackground: false, tickfont: { size: 10, color: css("--muted") } }, extra || {});
+  }
+  function base3d(scene, eye) {
+    return { paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)", margin: { l: 0, r: 0, t: 8, b: 0 },
+      font: { family: "IBM Plex Sans, system-ui, sans-serif", color: css("--ink") }, showlegend: false,
+      hoverlabel: { bgcolor: css("--surface"), bordercolor: css("--axis"), font: { color: css("--ink"), size: 12 } },
+      scene: Object.assign({ camera: { eye: eye || { x: 1.25, y: -1.3, z: 0.62 } }, aspectmode: "cube" }, scene) };
+  }
+  function keepCamera(id, layout) {
+    const gd = document.getElementById(id);
+    if (gd && gd._fullLayout && gd._fullLayout.scene) layout.scene.camera = gd._fullLayout.scene.camera;
+    return layout;
+  }
+
+  // ---- view 1: industry landscape ----
+  const LS = D3.landscape, LSC = Object.fromEntries(LS.cols.map((c, i) => [c, i]));
+  const allRows = LS.frames.flatMap((f) => f.rows);
+  const q = (arr, p) => { const s = arr.filter((v) => v !== null).sort((a, b) => a - b); return s[Math.floor(p * (s.length - 1))]; };
+  const RX = [q(allRows.map((r) => r[LSC.sentiment]), 0.005), q(allRows.map((r) => r[LSC.sentiment]), 0.995)];
+  const RY = [q(allRows.map((r) => r[LSC.valuation]), 0.005), q(allRows.map((r) => r[LSC.valuation]), 0.995)];
+  const RZ = [q(allRows.map((r) => r[LSC.next_ret]), 0.005) * 100, q(allRows.map((r) => r[LSC.next_ret]), 0.995) * 100];
+  const WMAX = q(allRows.map((r) => Math.abs(r[LSC.weight])), 0.95) || 0.05;
+  let lsFrame = LS.frames.findIndex((f) => f.d === "2020-03");
+  let lsTimer = null;
+  function drawLandscape() {
+    if (!hasPlotly) return;
+    const f = LS.frames[lsFrame], rows = f.rows;
+    const trace = {
+      type: "scatter3d", mode: "markers",
+      x: rows.map((r) => r[LSC.sentiment]), y: rows.map((r) => r[LSC.valuation]), z: rows.map((r) => r[LSC.next_ret] * 100),
+      text: rows.map((r) => r[LSC.name]),
+      customdata: rows.map((r) => [r[LSC.n], r[LSC.weight] * 100, r[LSC.mcap_bn], r[LSC.quality], r[LSC.management]]),
+      hovertemplate: "<b>%{text}</b><br>Sentiment %{x:.2f} · Valuation %{y:.2f}<br>Next-month return %{z:.1f}%" +
+        "<br>Industry-bet book: %{customdata[1]:+.1f}% of NAV<br>%{customdata[0]} stocks · $%{customdata[2]:,.0f}bn<extra></extra>",
+      marker: { size: rows.map((r) => 7 + 5 * Math.sqrt(Math.max(r[LSC.mcap_bn], 1) / 60)), color: rows.map((r) => r[LSC.weight]),
+        cmin: -WMAX, cmax: WMAX, colorscale: diverging(), opacity: 0.92,
+        line: { color: css("--surface"), width: 1.5 },
+        colorbar: { title: { text: "Book weight", side: "right", font: { size: 11, color: css("--ink-2") } }, thickness: 10, len: 0.6,
+          tickformat: ".0%", tickfont: { size: 10, color: css("--muted") }, outlinewidth: 0 } },
+    };
+    const layout = keepCamera("p-landscape", base3d({
+      xaxis: axis("Industry sentiment score", { range: RX }), yaxis: axis("Industry valuation score", { range: RY }),
+      zaxis: axis("Next-month return (%)", { range: RZ }) }));
+    Plotly.react("p-landscape", [trace], layout, PCONF);
+    const slider = document.getElementById("ls-slider");
+    slider.max = String(LS.frames.length - 1); slider.value = String(lsFrame);
+    const test = f.d >= "2020-01" && f.d <= "2023-12" ? " · test period" : "";
+    document.getElementById("ls-readout").textContent = `${monthName(f.d)} → returns in the next month · score–return rank corr ${num(f.ic)}${test}`;
+  }
+  document.getElementById("ls-slider").addEventListener("input", (e) => { lsFrame = +e.target.value; drawLandscape(); });
+  document.getElementById("ls-play").addEventListener("click", (e) => {
+    if (lsTimer) { clearInterval(lsTimer); lsTimer = null; e.target.textContent = "Play"; return; }
+    e.target.textContent = "Pause";
+    if (lsFrame >= LS.frames.length - 1) lsFrame = 0;
+    lsTimer = setInterval(() => {
+      lsFrame += 1; drawLandscape();
+      if (lsFrame >= LS.frames.length - 1) { clearInterval(lsTimer); lsTimer = null; e.target.textContent = "Play"; }
+    }, 380);
+  });
+
+  // ---- view 2: peer map ----
+  const PM = D3.peer_map, PMC = Object.fromEntries(PM.cols.map((c, i) => [c, i]));
+  const SECTOR_NAME = { BusEq: "Business equipment & tech", Hlth: "Healthcare", Manuf: "Manufacturing", Shops: "Retail & services",
+    Utils: "Utilities", Enrgy: "Energy", NoDur: "Consumer staples", Durbl: "Consumer durables", Chems: "Chemicals", Telcm: "Telecom", Other: "Other (FF12)" };
+  const clusterSize = {};
+  PM.points.forEach((p) => { clusterSize[p[PMC.cluster]] = (clusterSize[p[PMC.cluster]] || 0) + 1; });
+  const topClusters = Object.entries(clusterSize).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([c]) => +c);
+  let pmCluster = topClusters[0];
+  function drawPeers() {
+    seg("c-cluster", topClusters.map((c) => ({ value: c, label: `#${c} · ${clusterSize[c]} stocks` })), pmCluster,
+        (v) => { pmCluster = v; drawPeers(); });
+    if (!hasPlotly) return;
+    const inC = PM.points.filter((p) => p[PMC.cluster] === pmCluster), out = PM.points.filter((p) => p[PMC.cluster] !== pmCluster);
+    const counts = {};
+    inC.forEach((p) => { counts[p[PMC.sector]] = (counts[p[PMC.sector]] || 0) + 1; });
+    const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const slots = [css("--s-within"), css("--s-between"), css("--s-comp")];
+    const colorOf = (sec) => { const k = ranked.findIndex(([s]) => s === sec); return k >= 0 && k < 3 ? slots[k] : css("--ink-2"); };
+    const mk = (pts, name, color, size, opacity, withLine) => ({
+      type: "scatter3d", mode: "markers", name,
+      x: pts.map((p) => p[PMC.pc1]), y: pts.map((p) => p[PMC.pc2]), z: pts.map((p) => p[PMC.pc3]),
+      text: pts.map((p) => `<b>${p[PMC.ticker]}</b> ${p[PMC.name]}<br>${SECTOR_NAME[p[PMC.sector]] || p[PMC.sector]} · cluster #${p[PMC.cluster]}`),
+      hovertemplate: "%{text}<extra></extra>",
+      marker: { size, color, opacity, line: withLine ? { color: css("--surface"), width: 1 } : { width: 0 } } });
+    const traces = [mk(out, "other stocks", css("--muted"), 2.6, 0.22, false)];
+    for (const [sec] of ranked) {
+      traces.push(mk(inC.filter((p) => p[PMC.sector] === sec), sec, colorOf(sec), 6.5, 0.95, true));
+    }
+    const ex = PM.explained.map((e) => (e * 100).toFixed(1) + "%");
+    const layout = keepCamera("p-peers", base3d({ xaxis: axis(`PC1 (${ex[0]} of variance)`), yaxis: axis(`PC2 (${ex[1]})`), zaxis: axis(`PC3 (${ex[2]})`) },
+      { x: 1.3, y: 1.15, z: 0.65 }));
+    Plotly.react("p-peers", traces, layout, PCONF);
+    const top = ranked.slice(0, 3).map(([s, n], k) => `${SECTOR_NAME[s] || s} ${Math.round((100 * n) / inC.length)}%`).join(", ");
+    const shareTop = ranked.length ? ranked[0][1] / inC.length : 0;
+    const tickers = inC.slice(0, 8).map((p) => p[PMC.ticker]).join(", ");
+    document.getElementById("nt-peers").innerHTML =
+      `Cluster #${pmCluster} (${inC.length} stocks, e.g. ${tickers}): ${top}${ranked.length > 3 ? ", other sectors in dark grey" : ""}. ` +
+      (shareTop < 0.6 ? "No single sector holds 60% of its members: an SIC-based peer group would split these stocks up. " : "Mostly one sector: here SIC and statistical peers agree. ") +
+      "Across all 50 clusters, 44% have no sector with a 60% majority. Utilities form the purest cluster (96%).";
+  }
+
+  // ---- view 3: regime surface ----
+  function drawRegime() {
+    if (!hasPlotly) return;
+    const R = D3.regime;
+    const yearIdx = R.dates.map((d, i) => [d, i]).filter(([d]) => d.endsWith("-01"));
+    const trace = { type: "surface", z: R.z, x: R.dates.map((_, i) => i), y: R.books.map((_, i) => i),
+      colorscale: diverging(), cmid: 0, cmin: -2.5, cmax: 2.5, showscale: true,
+      colorbar: { title: { text: "Rolling Sharpe", side: "right", font: { size: 11, color: css("--ink-2") } }, thickness: 10, len: 0.6,
+        tickfont: { size: 10, color: css("--muted") }, outlinewidth: 0 },
+      customdata: R.books.map((b) => R.dates.map((d) => [b, d])),
+      hovertemplate: "<b>%{customdata[0]}</b><br>24 months to %{customdata[1]}<br>Sharpe %{z:.2f}<extra></extra>",
+      contours: { z: { show: true, start: 0, end: 0, size: 1, color: css("--ink-2"), width: 2 } },
+      lighting: { ambient: 0.75, diffuse: 0.5, specular: 0.08, roughness: 0.9 } };
+    const layout = keepCamera("p-regime", base3d({
+      xaxis: axis("", { tickvals: yearIdx.map(([, i]) => i), ticktext: yearIdx.map(([d]) => d.slice(0, 4)) }),
+      yaxis: axis("", { tickvals: R.books.map((_, i) => i), ticktext: R.books }),
+      zaxis: axis("Sharpe (24m)"), aspectratio: { x: 2.2, y: 1.3, z: 0.7 }, aspectmode: "manual" }, { x: -1.1, y: -2.1, z: 1.1 }));
+    Plotly.react("p-regime", [trace], layout, PCONF);
+  }
+
+  // ---- tabs ----
+  let tab3d = "landscape";
+  function drawTabs() {
+    seg("c-3d-tab", [{ value: "landscape", label: "Industry landscape" }, { value: "peers", label: "Peer map" }, { value: "regime", label: "Regime surface" }],
+        tab3d, (v) => { tab3d = v; drawTabs(); });
+    for (const v of ["landscape", "peers", "regime"]) document.getElementById("v-" + v).hidden = v !== tab3d;
+    if (!hasPlotly) {
+      document.querySelectorAll(".plot3d").forEach((n) => { n.style.height = "auto"; n.innerHTML = '<p class="note">The 3D views need the Plotly library, which could not load.</p>'; });
+      return;
+    }
+    ({ landscape: drawLandscape, peers: drawPeers, regime: drawRegime })[tab3d]();
+    const gd = document.getElementById({ landscape: "p-landscape", peers: "p-peers", regime: "p-regime" }[tab3d]);
+    if (gd && gd.data) Plotly.Plots.resize(gd);
+  }
+
+  function drawAll() { drawExplorer(); drawBeta(); drawThemes(); drawCoverage(); drawTabs(); }
+  drawAll();
+  let rt;
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 150); });
+  if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", drawAll);
+  new MutationObserver(drawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
