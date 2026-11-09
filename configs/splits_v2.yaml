@@ -1,0 +1,7 @@
+# v2 (2026-11). Choices only on development+validation. test and recent were reported in v1, so in v2 they are
+# "seen periods". forward starts at the v2 freeze (signal months >= 2026-11); the only unseen data.
+development: ["2012-01", "2016-12"]
+validation: ["2017-01", "2019-12"]
+test: ["2020-01", "2023-12"]
+recent: ["2024-01", "2026-10"]
+forward: ["2026-11", null]

@@ -1,0 +1,22 @@
+# Frozen with preregistration_v2.md. Same as configs/backtest.yaml except the v2 additions below.
+universe_size: 1000
+min_price: 5.0
+ic: 0.03
+cost_multiplier: 1.0
+n_clusters: 50
+optimiser:
+  risk_aversion: 8
+  gross: 2.0
+  name_cap: 0.01
+  adv_cap: 0.05
+  nav: 100000000
+  impact_y: 0.5
+v2:
+  borrow_tiers_bps: [25, 50, 150]   # by market-cap rank in the universe: 1-500, 501-800, 801-1000 (assumption, no free data)
+  borrow_tier_cuts: [500, 800]
+  style_tol: 0.05                   # |style exposure of the book| <= 0.05 std units per unit NAV, each style
+  turnover_cap: 0.10                # one-way, fraction of NAV per month (soft fallback flagged)
+  style_window_days: 252
+  factor_cov_shrink: ledoit_wolf
+  specific_var_blend: 0.7           # d = 0.7 * own + 0.3 * cross-sectional median
+styles: [size, value, momentum, profitability, leverage, investment, volatility, beta]
