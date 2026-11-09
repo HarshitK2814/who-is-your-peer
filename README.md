@@ -137,3 +137,49 @@ costs; theme variables are our reconstruction; nothing here describes the manage
 Literature: [`research/literature_review.md`](research/literature_review.md).
 
 *Research artifact, not investment advice.*
+
+## 9. v2: industry-grade upgrade (pre-registered 2026-11-09)
+
+v1 stays sealed. v2 adds what a buy-side desk would ask for, tested against a second frozen pre-registration
+([`research/preregistration_v2.md`](research/preregistration_v2.md), hash `b83921d49b3c`). Evidence and decisions:
+[`research/evidence_v2.md`](research/evidence_v2.md). Every number: [`research/results_v2.md`](research/results_v2.md),
+generated from `results/v2/` files by `scripts/v2/make_results_v2.py`.
+
+```mermaid
+flowchart LR
+    E["Evidence file<br/>peers, Barra-style models, borrow, turnover"] --> P["Pre-registration v2<br/>frozen first"]
+    P --> M["Style risk model<br/>FF49 + 8 styles from free data"]
+    M --> O["Optimiser v2<br/>style/industry neutral, turnover cap, tiered borrow"]
+    O --> T["H1-H4 + borrow, capacity, SHAP"]
+    T --> F["Forward paper tracking<br/>from 2026-11 (only unseen data)"]
+```
+
+**Timing.** Signal at month-end close t, fill at the t+1 close, hold one month. **Costs on every number:** $100M NAV,
+half-spread + square-root impact, 20 bp forced exits, borrow 25/50/150 bp/yr by market-cap rank (assumption, swept 25-400 bp),
+excess over T-bills. **Evidence labels:** the 2012-2019 design period has 96 signals and is not out-of-sample for the v1 signal;
+2020-2026 is the *seen period (v1 reported it)*; only the forward test is unseen.
+
+| Hypothesis (design period 2012-2019) | Result | Verdict |
+|---|---|---|
+| H1 industry+style-neutral composite has positive net return | Sharpe -0.43 [-1.19, 0.31], Romano-Wolf p 0.91 | **Not supported** |
+| H2 Barra-like style model forecasts risk better than the PCA-10 model | QLIKE gap 0.15, 95% CI [-0.05, 0.46] | **Not supported** (positive but not detectable) |
+| H3 a 10% turnover cap raises net Sharpe | Sharpe -0.14 vs uncapped, p 0.19; cost 34 vs 50 bp/yr | **Not supported** (cheaper, not better) |
+| H4 v1 books not overfit (PBO < 0.5, DSR > 0.90) | PBO 0.36, DSR of C_FF49 0.009 | **Not supported** (all books weak in-sample) |
+
+Lessons, stated plainly: the v1 composite earned no reliable net return in 2012-2019 (Sharpe -0.49, CI spans zero); removing
+its style and industry exposure did not change that. The unconstrained book carries large exposure to profitability and
+leverage (the style model puts about 61% of its ex-ante variance in style factors); the neutral books drive that to about 4%
+with no measurable gain or loss in return. Borrow cost matters: in the seen period the book's breakeven flat fee is a few hundred
+bp. Capacity is cost-limited well before it is ADV-limited. Not done: text-based (Hoberg-Phillips) peers, any CRSP replication.
+Optimiser cross-checked against skfolio MeanRisk (weight correlation above 0.99999 on sampled months).
+
+Reproduce v2 (needs the v1 data under `data/`):
+
+```bash
+pip install -e ./qcore -e ".[dev,v2]"
+python scripts/v2/build_style.py && python scripts/v2/run_books.py
+for s in h1_neutral h2_riskmodel h3_turnover overfit_audit borrow_capacity shap_signal skfolio_check; do python scripts/v2/$s.py; done
+python scripts/v2/make_results_v2.py
+python scripts/v2/forward.py          # monthly, from the 2026-11 signal; commit results/v2/forward/ at once
+pytest -q
+```

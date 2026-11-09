@@ -1,0 +1,36 @@
+{
+ "prereg_hash": "b83921d49b3c",
+ "periods": {
+  "design 2013-01..2019-12 (choice period)": {
+   "n_months": 84,
+   "n_portfolio_months": 1260,
+   "mean_qlike_diff_pca_minus_style": 0.1518722195707817,
+   "ci95": [
+    -0.05385578752243845,
+    0.455615062395865
+   ],
+   "mean_qlike_pca": -5.736829303129421,
+   "mean_qlike_style": -5.888701522700202,
+   "bias_std_pca": 1.0771825566997268,
+   "bias_std_style": 1.0220111214371124,
+   "share_months_style_better": 0.40476190476190477,
+   "mean_forecast_vol_ratio_style_over_pca": 1.0773536758428828
+  },
+  "2020-2026 seen period (v1 reported it)": {
+   "n_months": 79,
+   "n_portfolio_months": 1185,
+   "mean_qlike_diff_pca_minus_style": 0.11524416185405831,
+   "ci95": [
+    -0.08699179028305284,
+    0.4057564478320791
+   ],
+   "mean_qlike_pca": -4.957984334592164,
+   "mean_qlike_style": -5.073228496446223,
+   "bias_std_pca": 1.014176980472403,
+   "bias_std_style": 1.03411571206942,
+   "share_months_style_better": 0.4177215189873418,
+   "mean_forecast_vol_ratio_style_over_pca": 1.0503081943752963
+  }
+ },
+ "H2_supported": false
+}

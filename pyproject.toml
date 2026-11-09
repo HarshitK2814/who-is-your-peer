@@ -25,6 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+v2 = ["shap>=0.45", "skfolio>=0.10", "matplotlib>=3.8"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

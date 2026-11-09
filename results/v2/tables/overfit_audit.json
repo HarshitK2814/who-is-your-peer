@@ -1,0 +1,40 @@
+{
+ "prereg_hash": "b83921d49b3c",
+ "period": [
+  "2012-01-31",
+  "2019-12-31"
+ ],
+ "n_months": 96,
+ "n_trials": 17,
+ "pbo": 0.35714285714285715,
+ "pbo_n_combinations": 70,
+ "pbo_logit_median": 0.9555114450274362,
+ "sr_var_per_month": 0.0030406137557364124,
+ "expected_max_sharpe_ann": 0.34919636671188975,
+ "v1_C_FF49_sharpe": -0.488182995639648,
+ "v1_C_FF49_ci95": [
+  -1.216059898468512,
+  0.20131051321668092
+ ],
+ "v1_C_FF49_psr_vs_0": 0.08358526508778735,
+ "v1_C_FF49_dsr": 0.008907722159212634,
+ "best_book_in_sample": "B_SIC3",
+ "best_book_ann_sharpe": 0.09567003633789935,
+ "n_books_sharpe_gt_0": 2,
+ "dsr_sensitivity_by_n_trials": {
+  "17": 0.008907722159212634,
+  "22": 0.007524805760207088,
+  "68": 0.0037463426295383205
+ },
+ "with_new_books": {
+  "n_columns": 22,
+  "pbo": 0.2714285714285714,
+  "best_book": "B_SIC3",
+  "best_ann_sharpe": 0.09567003633789935
+ },
+ "H4": {
+  "pbo_lt_0.5": true,
+  "dsr_gt_0.90": false,
+  "supported": false
+ }
+}

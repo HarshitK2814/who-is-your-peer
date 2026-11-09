@@ -1,0 +1,50 @@
+{
+ "prereg_hash": "b83921d49b3c",
+ "assumption": "borrow tiers and flat fees are assumptions (no free stock-loan data)",
+ "books": {
+  "V0_FF49": {
+   "max_abs_cost_recon_error": 4.336808689942018e-19,
+   "breakeven_flat_fee_bp": {
+    "design 2012-2019 (choice period)": -203.17465943506957,
+    "2020-2026 seen period (v1 reported it)": 261.9462402031684
+   },
+   "capacity_musd_sharpe_within_0.10_of_100M": {
+    "design 2012-2019 (choice period)": 250.0,
+    "2020-2026 seen period (v1 reported it)": 250.0
+   }
+  },
+  "SIN_FF49": {
+   "max_abs_cost_recon_error": 2.168404344971009e-19,
+   "breakeven_flat_fee_bp": {
+    "design 2012-2019 (choice period)": -135.7819138292546,
+    "2020-2026 seen period (v1 reported it)": 225.97803202333733
+   },
+   "capacity_musd_sharpe_within_0.10_of_100M": {
+    "design 2012-2019 (choice period)": 250.0,
+    "2020-2026 seen period (v1 reported it)": 250.0
+   }
+  },
+  "T_FF49": {
+   "max_abs_cost_recon_error": 4.336808689942018e-19,
+   "breakeven_flat_fee_bp": {
+    "design 2012-2019 (choice period)": -274.63905370123905,
+    "2020-2026 seen period (v1 reported it)": 282.78941461021464
+   },
+   "capacity_musd_sharpe_within_0.10_of_100M": {
+    "design 2012-2019 (choice period)": 1000.0,
+    "2020-2026 seen period (v1 reported it)": 250.0
+   }
+  },
+  "TSIN_FF49": {
+   "max_abs_cost_recon_error": 2.168404344971009e-19,
+   "breakeven_flat_fee_bp": {
+    "design 2012-2019 (choice period)": -141.63478595753202,
+    "2020-2026 seen period (v1 reported it)": 294.48298828795726
+   },
+   "capacity_musd_sharpe_within_0.10_of_100M": {
+    "design 2012-2019 (choice period)": 250.0,
+    "2020-2026 seen period (v1 reported it)": 1000.0
+   }
+  }
+ }
+}

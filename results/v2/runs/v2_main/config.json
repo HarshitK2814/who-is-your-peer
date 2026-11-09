@@ -1,0 +1,103 @@
+{
+  "backtest": {
+    "universe_size": 1000,
+    "min_price": 5.0,
+    "ic": 0.03,
+    "borrow_bps": 25.0,
+    "cost_multiplier": 1.0,
+    "n_clusters": 50,
+    "exclude_characteristics": [],
+    "books": [
+      "C_ALL",
+      "C_FF12",
+      "C_FF49",
+      "C_SIC3",
+      "C_RCLUST",
+      "CN_FF12",
+      "CN_FF49",
+      "CN_SIC3",
+      "CN_RCLUST",
+      "W_FF12",
+      "W_FF49",
+      "W_SIC3",
+      "W_RCLUST",
+      "B_FF12",
+      "B_FF49",
+      "B_SIC3",
+      "B_RCLUST"
+    ]
+  },
+  "optimiser": {
+    "risk_aversion": 8,
+    "gross": 2.0,
+    "name_cap": 0.01,
+    "adv_cap": 0.05,
+    "nav": 100000000,
+    "impact_y": 0.5,
+    "solver": "CLARABEL"
+  },
+  "v2": {
+    "borrow_tiers_bps": [
+      25,
+      50,
+      150
+    ],
+    "borrow_tier_cuts": [
+      500,
+      800
+    ],
+    "style_tol": 0.05,
+    "turnover_cap": 0.1,
+    "style_window_days": 252,
+    "factor_cov_shrink": "ledoit_wolf",
+    "specific_var_blend": 0.7
+  },
+  "specs": {
+    "P_FF49": {
+      "signal": "C_FF49",
+      "neutral": null,
+      "style": false,
+      "turnover": false,
+      "borrow": "flat"
+    },
+    "V0_FF49": {
+      "signal": "C_FF49",
+      "neutral": null,
+      "style": false,
+      "turnover": false,
+      "borrow": "tiered"
+    },
+    "SN_FF49": {
+      "signal": "C_FF49",
+      "neutral": null,
+      "style": true,
+      "turnover": false,
+      "borrow": "tiered"
+    },
+    "SIN_FF49": {
+      "signal": "C_FF49",
+      "neutral": "FF49",
+      "style": true,
+      "turnover": false,
+      "borrow": "tiered"
+    },
+    "T_FF49": {
+      "signal": "C_FF49",
+      "neutral": null,
+      "style": false,
+      "turnover": true,
+      "borrow": "tiered"
+    },
+    "TSIN_FF49": {
+      "signal": "C_FF49",
+      "neutral": "FF49",
+      "style": true,
+      "turnover": true,
+      "borrow": "tiered"
+    }
+  },
+  "dates": [
+    "2012-01-31",
+    "2026-07-31"
+  ]
+}

@@ -18,3 +18,5 @@ video/v2/audio/
 video/who_is_your_peer_linkedin.mp4
 video/composition.html
 video/poster.png
+results/v2/runs/v2_prefix_solverfail/weights.parquet
+results/v2/forward/_run/

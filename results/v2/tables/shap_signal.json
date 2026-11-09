@@ -1,0 +1,22 @@
+{
+ "prereg_hash": "b83921d49b3c",
+ "label": "EXPLORATORY",
+ "train_months": 58,
+ "eval_months": 36,
+ "eval_rows": 36000,
+ "mean_ic_gbm": 0.012361322395061285,
+ "mean_ic_composite": -0.004566971939391493,
+ "ic_diff_gbm_minus_composite": 0.016928294334452774,
+ "ic_diff_ci95": [
+  -0.005963899751165623,
+  0.03943146168877736
+ ],
+ "ic_diff_ci_excludes_zero": false,
+ "shap_by_theme": {
+  "quality": 0.018706294732176634,
+  "valuation": 0.011406982663444167,
+  "sentiment": 0.006518600639184694,
+  "management": 0.006171317275394128,
+  "growth": 0.002664927414198136
+ }
+}

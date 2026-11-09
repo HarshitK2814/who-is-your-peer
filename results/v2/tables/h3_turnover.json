@@ -1,0 +1,36 @@
+{
+ "prereg_hash": "b83921d49b3c",
+ "periods": {
+  "design 2012-2019 (choice period)": {
+   "sharpe_1": -0.641318547144219,
+   "sharpe_2": -0.504371473325115,
+   "diff_ann": -0.13694707381910395,
+   "se_ann": 0.10334916509582162,
+   "z": -1.3250912447346,
+   "p_two_sided": 0.18514088967114262,
+   "n": 96.0,
+   "T_FF49_turnover": 0.10009678318287114,
+   "T_FF49_cost_bps_yr": 33.90158243224965,
+   "T_FF49_fallback_months": 0,
+   "V0_FF49_turnover": 0.1645620638051796,
+   "V0_FF49_cost_bps_yr": 50.38911287520098,
+   "V0_FF49_fallback_months": 0
+  },
+  "2020-2026 seen period (v1 reported it)": {
+   "sharpe_1": 0.41875355595789926,
+   "sharpe_2": 0.3416059909771268,
+   "diff_ann": 0.0771475649807725,
+   "se_ann": 0.1492334468016667,
+   "z": 0.5169589434150287,
+   "p_two_sided": 0.6051848194994148,
+   "n": 79.0,
+   "T_FF49_turnover": 0.10971615619858044,
+   "T_FF49_cost_bps_yr": 49.283198231841496,
+   "T_FF49_fallback_months": 5,
+   "V0_FF49_turnover": 0.1958932729834359,
+   "V0_FF49_cost_bps_yr": 75.11388307715762,
+   "V0_FF49_fallback_months": 0
+  }
+ },
+ "H3_supported": false
+}

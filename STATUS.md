@@ -26,3 +26,9 @@
 - Commit the post-freeze work when the user asks, in a few logical commits, and push only when asked.
 - Research docs and the explorer still name the asset manager (source citation); the paper byline has the user's name.
 - Future work (paper §11): CRSP replication via WRDS (the user is checking university access), text-based peers from 10-K Item 1.
+
+
+## v2 (2026-11-09, autonomous run)
+- Plan `../.plans/v2/10-p1-v2.md`; prereg v2 frozen (hash b83921d49b3c); results in `research/results_v2.md`; README section 9.
+- All four v2 hypotheses not supported. Forward tracker ready; first forward signal month is 2026-11 (run `scripts/v2/forward.py` after the 2026-11 close).
+- Git: branch `master`, pushed to origin.
